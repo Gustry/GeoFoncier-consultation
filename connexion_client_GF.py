@@ -38,12 +38,12 @@ class ConnexionClientGF:
         req.add_header("Authorization", authheader)
 
         try:
-            print u"Requête HTTPS en cours"
+            print u"Requete HTTPS en cours"
             print url
             res = urllib2.urlopen(req)
             #headers = res.info().headers
             data = res.read()
-            print u"Fin requête HTTPS"
+            print u"Fin requete HTTPS"
             return data
         except urllib2.HTTPError as e:
             if e.code == 401:
