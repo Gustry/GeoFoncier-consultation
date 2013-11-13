@@ -2,10 +2,10 @@
 
 Plugin QGIS pour la consultation des dossiers GéoFoncier
 
-Fonctionne par défaut sur une API de recettage 
+Fonctionne sur l'API de recettage et de production
 
 
 #ToDo
 
-* Sauvgarder le territoire
 * Envoyer une requête HTTPS avec authentification pour les documents
+* Traduire toutes les chaînes en anglais

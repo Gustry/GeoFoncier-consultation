@@ -33,9 +33,9 @@ class ConnexionClientGF:
         base64string = base64.encodestring('%s:%s' % (login, password))
         return "Basic %s" % base64string
 
-    def getExternalLink(self,url):
+    def getExternalLink(self,component):
         desktopService = QDesktopServices()
-        desktopService.openUrl(QUrl(self.url+url))
+        desktopService.openUrl(QUrl(self.url+component))
 
     def get(self, composante):
         url = self.url+composante
@@ -43,14 +43,12 @@ class ConnexionClientGF:
         authheader = self.authentification
 
         req.add_header("Authorization", authheader)
+        req.add_header = ('User-agent', 'QGIS_plugin_consultation')
 
         try:
-            print u"Requete HTTPS en cours"
-            print url
             res = urllib2.urlopen(req)
             #headers = res.info().headers
             data = res.read()
-            print u"Fin requete HTTPS"
             return data
         except urllib2.HTTPError as e:
             if e.code == 401:

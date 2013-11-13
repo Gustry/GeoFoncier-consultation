@@ -67,7 +67,7 @@ class GeoFoncierConsultation:
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(u"&GéoFoncier : diffusion aux clients", self.action)
+        self.iface.addPluginToMenu(u"&Mes dossiers GéoFoncier", self.action)
         
         #Ajout du connecteur bouton d'aide
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
@@ -76,7 +76,7 @@ class GeoFoncierConsultation:
 
     def unload(self):
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu(u"&GéoFoncier : diffusion aux clients", self.action)
+        self.iface.removePluginMenu(u"&Mes dossiers GéoFoncier", self.action)
         self.iface.removeToolBarIcon(self.action)
           
     def aboutWindow(self):
@@ -104,6 +104,8 @@ class GeoFoncierConsultation:
         login = self.dlg.ui.lineEdit_login.text()
         password = self.dlg.ui.lineEdit_password.text()
         zone = str(self.dlg.ui.comboBox_zone.currentText())
+        
+        self.saveZone(zone)
         
         connexionAPI = ConnexionClientGF(login, password, zone)
         listeDossierCSV = ''
@@ -168,10 +170,21 @@ class GeoFoncierConsultation:
         zone = str(self.dlg.ui.comboBox_zone.currentText())
         connexionAPI = ConnexionClientGF(login, password, zone)
         connexionAPI.getExternalLink(dossier.getURLDocument())
-         
                 
     def run(self):
         #Initialisation
+        
+        #Load zone
+        try:
+            with open(os.path.join(self.plugin_dir,"zone.txt"), "r") as fichier :
+                ancienneZone = fichier.read()
+                fichier.close()
+                if ancienneZone != "":
+                    index = self.dlg.ui.comboBox_zone.findText(ancienneZone)
+                    self.dlg.ui.comboBox_zone.setCurrentIndex(index)
+        except IOError:
+            pass
+        
         self.dlg.ui.label_login.setDisabled(False)
         self.dlg.ui.label_password.setDisabled(False)
         self.dlg.ui.label_zone.setDisabled(False)
@@ -184,3 +197,9 @@ class GeoFoncierConsultation:
         self.dlg.ui.tableWidget_dossiers.clearContents()
         del Dossier.listeDossiers[:]
         self.dlg.show()
+
+    def saveZone(self, zone):
+        print self.plugin_dir
+        with open(os.path.join(self.plugin_dir,"zone.txt"), "w") as fichier :
+            fichier.write(zone)
+            fichier.close()

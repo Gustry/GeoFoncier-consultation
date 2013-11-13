@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'geofoncierconsultation'
+project = u'Mes dossiers GéoFoncier'
 copyright = u'2013, Etienne Trimaille'
 
 # The version info for the project you're documenting, acts as replacement for
