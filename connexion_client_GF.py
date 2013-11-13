@@ -12,7 +12,7 @@ from exception import LoginException, NoResult
 
 class ConnexionClientGF:
 
-    def __init__(self, login, password, zone, url = "https://api-geofoncier.brgm-rec.fr/"):
+    def __init__(self, login, password, zone):
         
         zonesDisponibles = ("metropole", "antilles", "guyane", "reunion", "mayotte")
         if zone not in zonesDisponibles:
@@ -20,7 +20,14 @@ class ConnexionClientGF:
         
         self.authentification = self.createLogin(login, password)
         self.zone = zone
-        self.url = url
+        self.url = self.getURLAPI(login, password)
+    
+    def getURLAPI(self,login, password):
+        if login == "clientge" and password == "clientge":
+            return "https://api-geofoncier.brgm-rec.fr/"
+        else:
+            return "https://api.geofoncier.fr/"
+        
     
     def createLogin(self,login,password):
         base64string = base64.encodestring('%s:%s' % (login, password))
