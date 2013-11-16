@@ -72,6 +72,8 @@ class GeoFoncierConsultation:
         #Ajout du connecteur bouton d'aide
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
+        QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
+        QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         #QObject.connect(self.dlg.ui.pushButton_quitter, SIGNAL("clicked()"), self.quitter())
 
     def unload(self):
@@ -89,6 +91,12 @@ class GeoFoncierConsultation:
     def informationWindow(self,message):
         QMessageBox.information(self.dlg, self.dlg.trUtf8("GéoFoncier"), message)
 
+    def checkLineEdits(self):
+        if self.dlg.ui.lineEdit_login.text() != "" and self.dlg.ui.lineEdit_password.text() != "":
+            self.dlg.ui.pushButton_listerDossiers.setEnabled(True)
+        else:
+            self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
+            
     def listerDossiers(self):
         self.dlg.ui.label_listeDossiers.setText("Recherche en cours")
         self.dlg.ui.label_listeDossiers.show()

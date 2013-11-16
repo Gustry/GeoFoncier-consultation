@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Tue Nov 12 20:00:26 2013
+# Created: Sat Nov 16 20:34:23 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -64,6 +64,7 @@ class Ui_GeoFoncierConsultation(object):
         self.comboBox_zone.addItem(_fromUtf8(""))
         self.horizontalLayout.addWidget(self.comboBox_zone)
         self.pushButton_listerDossiers = QtGui.QPushButton(self.layoutWidget)
+        self.pushButton_listerDossiers.setDefault(True)
         self.pushButton_listerDossiers.setObjectName(_fromUtf8("pushButton_listerDossiers"))
         self.horizontalLayout.addWidget(self.pushButton_listerDossiers)
         self.label_listeDossiers = QtGui.QLabel(GeoFoncierConsultation)
