@@ -135,14 +135,14 @@ class GeoFoncierConsultation:
                 self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ self.dlg.trUtf8(" dossiers trouvés"))
                 
             #Remplissage de la tableView
-            self.dlg.ui.tableWidget_dossiers.setColumnCount(6)
-            self.dlg.ui.tableWidget_dossiers.setHorizontalHeaderLabels(['Structure', 'Ref', 'Commune', 'Code INSEE', 'Date','Zip','Doc','Afficher'])
+            self.dlg.ui.tableWidget_dossiers.setColumnCount(7)
+            self.dlg.ui.tableWidget_dossiers.setHorizontalHeaderLabels(['Structure', 'Ref', 'Commune', 'Code INSEE', 'Date','Zip','Afficher'])
             self.dlg.ui.tableWidget_dossiers.setRowCount(nombreDossiers)
             
             self.buttonGroupArchive = QButtonGroup()
             self.buttonGroupArchive.buttonClicked[int].connect(self.getArchive)
-            self.buttonGroupDocument = QButtonGroup()
-            self.buttonGroupDocument.buttonClicked[int].connect(self.getDocument)
+            self.buttonGroupDetails = QButtonGroup()
+            self.buttonGroupDetails.buttonClicked[int].connect(self.getDetails)
             
             for row,dossier in enumerate(Dossier.listeDossiers):
                 element = dossier.getInformations()
@@ -151,13 +151,14 @@ class GeoFoncierConsultation:
                 self.dlg.ui.tableWidget_dossiers.setItem(row, 2, QTableWidgetItem(self.dlg.trUtf8(element[2])))
                 self.dlg.ui.tableWidget_dossiers.setItem(row, 3, QTableWidgetItem(self.dlg.trUtf8(element[3])))
                 self.dlg.ui.tableWidget_dossiers.setItem(row, 4, QTableWidgetItem(self.dlg.trUtf8(element[4])))
+                
                 button = QPushButton("Archive")
                 self.buttonGroupArchive.addButton(button, row)
                 self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 5, button)
-                button = QPushButton("Document")
-                self.buttonGroupDocument.addButton(button, row)
-                #self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 6, button)
-                #self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 7, QPushButton("Afficher"))
+                
+                button = QPushButton("Voir")
+                self.buttonGroupDetails.addButton(button, row)
+                self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 6, button)
             
             self.dlg.ui.tableWidget_dossiers.resizeColumnsToContents();
             self.dlg.ui.tableWidget_dossiers.resizeRowsToContents();
@@ -171,13 +172,14 @@ class GeoFoncierConsultation:
         connexionAPI = ConnexionClientGF(login, password, zone)
         connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
         
-    def getDocument(self,row):
+    def getDetails(self,row):
         dossier = Dossier.getDossier(row)
+        
         login = self.dlg.ui.lineEdit_login.text()
         password = self.dlg.ui.lineEdit_password.text()
         zone = str(self.dlg.ui.comboBox_zone.currentText())
         connexionAPI = ConnexionClientGF(login, password, zone)
-        connexionAPI.getExternalLink(dossier.getURLDocument())
+        dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
                 
     def run(self):
         #Initialisation
@@ -207,7 +209,6 @@ class GeoFoncierConsultation:
         self.dlg.show()
 
     def saveZone(self, zone):
-        print self.plugin_dir
         with open(os.path.join(self.plugin_dir,"zone.txt"), "w") as fichier :
             fichier.write(zone)
             fichier.close()

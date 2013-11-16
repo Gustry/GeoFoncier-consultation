@@ -8,3 +8,6 @@ class LoginException(Exception):
 
 class NoResult(Exception):
     pass
+
+class ErreurDossier(Exception):
+    pass

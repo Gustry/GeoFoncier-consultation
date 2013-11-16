@@ -4,6 +4,9 @@ Created on 11 nov. 2013
 @author: etienne
 '''
 import StringIO, csv
+import xml.etree.ElementTree as ET
+from exception import ErreurDossier
+
 class Dossier:
     
     listeDossiers = []
@@ -30,7 +33,7 @@ class Dossier:
             print str(i) + " " + str(dossier.id)
     printDossiers = classmethod(printDossiers)
     
-    def __init__(self,url,structure_ge,reference,nom_commune,insee_commune,date,geometrie_kml = None,document = None):
+    def __init__(self,url,structure_ge,reference,nom_commune,insee_commune,date,document = [],geometrie_kml = None):
         self.id = self.getID(url)
         self.structure_ge = structure_ge
         self.reference = reference
@@ -51,6 +54,21 @@ class Dossier:
     def getURLArchiveZIP(self):
         return "clientsge/dossiers/"+self.id+".zip"
     
-    def getURLDocument(self):
-        return "clientsge/documents/"+self.id
+    def getURLDossier(self):
+        return "clientsge/dossiers/"+self.id
     
+    def loadDetails(self,data):
+        tree = ET.parse(StringIO.StringIO(data))
+        root = tree.getroot()
+        for child in root[0]:
+            
+            if child.tag == "id" and child.text != self.id:
+                raise ErreurDossier, "Erreur dossier"
+            
+            if child.tag == "geometrie_kml":
+                print child[0]
+                
+            if child.tag == "document":
+                self.document.append(child[0].attrib["href"])
+                
+        print self.document
