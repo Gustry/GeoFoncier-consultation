@@ -37,6 +37,8 @@ from fileinput import close
 
 
 class GeoFoncierConsultationDetails:
+    
+    dossier = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -173,22 +175,40 @@ class GeoFoncierConsultationDetails:
         connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
         
     def getDetails(self,row):
+        global dossier
+        self.dlg.ui.listWidget_details.clear()
         dossier = Dossier.getDossier(row)
-        self.dlg.ui.label_listeDossiers.setText("Recherche en cours du dossier " + dossier.reference)
+
+        if dossier.getGeometrie() == None:
+            login = self.dlg.ui.lineEdit_login.text()
+            password = self.dlg.ui.lineEdit_password.text()
+            zone = str(self.dlg.ui.comboBox_zone.currentText())
+            connexionAPI = ConnexionClientGF(login, password, zone)
+            dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
+            
+        
+        self.dlg.ui.label_reference.setText(dossier.reference)
+        self.dlg.ui.label_structure.setText(dossier.structure_ge)
+        self.dlg.ui.label_commune.setText(dossier.nom_commune)
+        self.dlg.ui.label_date.setText(dossier.date)
+        self.dlg.ui.label_insee.setText(dossier.insee_commune)
         QApplication.processEvents()
+        for i,doc in enumerate(dossier.getDocuments()):
+            item = QListWidgetItem()
+            tab = dossier.getTypeOfDocument(i)
+            item.setText(self.dlg.trUtf8(tab[0]));
+            self.dlg.ui.listWidget_details.addItem(item);
+        self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
+        self.dlg.ui.tabWidget.setTabEnabled(1, True);
+        self.dlg.ui.tabWidget.setCurrentIndex(1)
+
+    def getExternalDocument(self):
+        row = self.dlg.ui.listWidget_details.currentRow()
         login = self.dlg.ui.lineEdit_login.text()
         password = self.dlg.ui.lineEdit_password.text()
         zone = str(self.dlg.ui.comboBox_zone.currentText())
         connexionAPI = ConnexionClientGF(login, password, zone)
-        dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
-        self.dlg.ui.label_listeDossiers.setText("Dossier " + dossier.reference + " trouvé")
-        QApplication.processEvents()
-        for i,doc in enumerate(dossier.getDocuments()):
-            item = QListWidgetItem()
-            item.setText(doc);
-            self.dlg.ui.listWidget_details.addItem(item);
-        self.dlg.ui.listWidget_details.show()
-        
+        connexionAPI.getExternalLinkBis(dossier.getURLDocument(row))
                 
     def run(self):
         #Initialisation
@@ -205,7 +225,9 @@ class GeoFoncierConsultationDetails:
         except IOError:
             pass
         
-        self.dlg.ui.listWidget_details.hide()
+        self.dlg.ui.tabWidget.setTabEnabled(1, False);
+        self.dlg.ui.tabWidget.setTabText(0,"Dossiers")
+        self.dlg.ui.tabWidget.setTabText(1,self.dlg.trUtf8("Détails"))
         self.dlg.ui.label_login.setDisabled(False)
         self.dlg.ui.label_password.setDisabled(False)
         self.dlg.ui.label_zone.setDisabled(False)

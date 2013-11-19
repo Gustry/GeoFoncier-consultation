@@ -36,6 +36,10 @@ class ConnexionClientGF:
     def getExternalLink(self,component):
         desktopService = QDesktopServices()
         desktopService.openUrl(QUrl(self.url+component))
+        
+    def getExternalLinkBis(self,component):
+        desktopService = QDesktopServices()
+        desktopService.openUrl(QUrl(component))
 
     def get(self, composante):
         url = self.url+composante
