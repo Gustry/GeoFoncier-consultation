@@ -101,11 +101,16 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
             
     def listerDossiers(self):
+        msgBox = QProgressDialog("Chargement","Annuler",0,0)
+        msgBox.setValue(-1)
+        msgBox.setWindowTitle("Chargement des dossiers")
+        msgBox.setAutoReset(True)
+        msgBox.setAutoClose(False)
+        msgBox.open()
+        QApplication.processEvents()
         
         global connexionAPI
         
-        self.dlg.ui.label_listeDossiers.setText("Recherche en cours")
-        self.dlg.ui.label_listeDossiers.show()
         self.dlg.ui.label_login.setDisabled(True)
         self.dlg.ui.label_password.setDisabled(True)
         self.dlg.ui.label_zone.setDisabled(True)
@@ -169,6 +174,9 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.tableWidget_dossiers.resizeColumnsToContents();
             self.dlg.ui.tableWidget_dossiers.resizeRowsToContents();
             self.dlg.ui.tableWidget_dossiers.show()
+            self.dlg.ui.label_listeDossiers.show()
+            
+            msgBox.close()
 
     def getArchive(self,row):
         global connexionAPI
@@ -176,6 +184,14 @@ class GeoFoncierConsultationDetails:
         connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
         
     def getDetails(self,row):
+        msgBox = QProgressDialog("Chargement","Annuler",0,0)
+        msgBox.setValue(-1)
+        msgBox.setWindowTitle("Chargement du dossier")
+        msgBox.setAutoReset(True)
+        msgBox.setAutoClose(False)
+        msgBox.open()
+        QApplication.processEvents()
+
         global connexionAPI
         global dossier
         self.dlg.ui.listWidget_details.clear()
@@ -198,6 +214,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
         self.dlg.ui.tabWidget.setCurrentIndex(1)
+        msgBox.close()
 
     def getExternalDocument(self):
         global connexionAPI
