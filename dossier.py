@@ -4,10 +4,9 @@ Created on 11 nov. 2013
 
 @author: etienne
 '''
-import StringIO, csv
+import StringIO, csv, re
 import xml.etree.ElementTree as ET
 from exception import ErreurDossier
-from array import *
 
 class Dossier:
     
@@ -54,10 +53,10 @@ class Dossier:
         return [self.structure_ge, self.reference, self.nom_commune, self.insee_commune, self.date, self.id]
     
     def getURLArchiveZIP(self):
-        return "clientsge/dossiers/"+self.id+".zip"
+        return "dossiers/"+self.id+".zip"
     
     def getURLDossier(self):
-        return "clientsge/dossiers/"+self.id
+        return "dossiers/"+self.id
 
     def getURLDocument(self,numDocument):
         return self.document[numDocument]
@@ -69,11 +68,10 @@ class Dossier:
         return self.geometrie_kml
     
     def getTypeOfDocument(self,idDocument):
-        import re
         result = []
-        resultat = re.search("^https://(api-geofoncier.brgm-rec.fr|api.geofoncier.fr)/[a-z]*/documents/mFR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d)$",self.document[idDocument])
+        resultat = re.search("^documents/mFR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d)$",self.document[idDocument])
         if resultat:
-            type = resultat.group(2)
+            type = resultat.group(1)
             if type == "1PVa":
                     result.append("Procès-verbal avec plan foncier ou croquis")
             elif type == "1PVb":
@@ -115,7 +113,7 @@ class Dossier:
             else:
                     print "erreur de doc"
                     
-            result.append(resultat.group(3))            
+            result.append(resultat.group(2))            
         return result
     
     def loadDetails(self,data):
@@ -130,4 +128,6 @@ class Dossier:
                 self.geometrie_kml = "dossier en memoire"
                 
             if child.tag == "document":
-                self.document.append(child[0].attrib["href"])
+                href = child[0].attrib["href"]
+                resultat = re.search("^https://(api-geofoncier.brgm-rec.fr|api.geofoncier.fr)/clientsge/(documents/mFR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d))$",href)
+                self.document.append(resultat.group(2))

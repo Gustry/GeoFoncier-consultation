@@ -202,7 +202,7 @@ class GeoFoncierConsultationDetails:
     def getExternalDocument(self):
         global connexionAPI
         row = self.dlg.ui.listWidget_details.currentRow()
-        connexionAPI.getExternalLinkBis(dossier.getURLDocument(row))
+        connexionAPI.getExternalLink(dossier.getURLDocument(row))
                 
     def run(self):
         #Initialisation

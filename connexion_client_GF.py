@@ -24,11 +24,10 @@ class ConnexionClientGF:
     
     def getURLAPI(self,login, password):
         if login == "clientge" and password == "clientge":
-            return "https://api-geofoncier.brgm-rec.fr/"
+            return "https://api-geofoncier.brgm-rec.fr/clientsge/"
         else:
-            return "https://api.geofoncier.fr/"
-        
-    
+            return "https://api.geofoncier.fr/clientsge/"
+            
     def createLogin(self,login,password):
         base64string = base64.encodestring('%s:%s' % (login, password))
         return "Basic %s" % base64string
@@ -36,10 +35,6 @@ class ConnexionClientGF:
     def getExternalLink(self,component):
         desktopService = QDesktopServices()
         desktopService.openUrl(QUrl(self.url+component))
-        
-    def getExternalLinkBis(self,component):
-        desktopService = QDesktopServices()
-        desktopService.openUrl(QUrl(component))
 
     def get(self, composante):
         url = self.url+composante
@@ -64,4 +59,4 @@ class ConnexionClientGF:
             raise e
             
     def getListeDossiers(self):
-        return self.get("clientsge/dossiers?output=csv&zone="+self.zone)
+        return self.get("dossiers?output=csv&zone="+self.zone)
