@@ -57,6 +57,9 @@ class Dossier:
     def getURLDossier(self):
         return "clientsge/dossiers/"+self.id
     
+    def getDocuments(self):
+        return self.document
+    
     def loadDetails(self,data):
         tree = ET.parse(StringIO.StringIO(data))
         root = tree.getroot()
@@ -70,5 +73,3 @@ class Dossier:
                 
             if child.tag == "document":
                 self.document.append(child[0].attrib["href"])
-                
-        print self.document

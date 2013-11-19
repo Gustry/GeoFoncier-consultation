@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- GeoFoncierConsultation
+ GeoFoncierConsultationDetails
                                  A QGIS plugin
  Plugin  de diffusion des dossiers aux clients GéoFoncier
                               -------------------
@@ -36,7 +36,7 @@ import os.path
 from fileinput import close
 
 
-class GeoFoncierConsultation:
+class GeoFoncierConsultationDetails:
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -174,15 +174,25 @@ class GeoFoncierConsultation:
         
     def getDetails(self,row):
         dossier = Dossier.getDossier(row)
-        
+        self.dlg.ui.label_listeDossiers.setText("Recherche en cours du dossier " + dossier.reference)
+        QApplication.processEvents()
         login = self.dlg.ui.lineEdit_login.text()
         password = self.dlg.ui.lineEdit_password.text()
         zone = str(self.dlg.ui.comboBox_zone.currentText())
         connexionAPI = ConnexionClientGF(login, password, zone)
         dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
+        self.dlg.ui.label_listeDossiers.setText("Dossier " + dossier.reference + " trouvé")
+        QApplication.processEvents()
+        for i,doc in enumerate(dossier.getDocuments()):
+            item = QListWidgetItem()
+            item.setText(doc);
+            self.dlg.ui.listWidget_details.addItem(item);
+        self.dlg.ui.listWidget_details.show()
+        
                 
     def run(self):
         #Initialisation
+        self.dlg.setFixedSize(self.dlg.size());
         
         #Load zone
         try:
@@ -195,6 +205,7 @@ class GeoFoncierConsultation:
         except IOError:
             pass
         
+        self.dlg.ui.listWidget_details.hide()
         self.dlg.ui.label_login.setDisabled(False)
         self.dlg.ui.label_password.setDisabled(False)
         self.dlg.ui.label_zone.setDisabled(False)

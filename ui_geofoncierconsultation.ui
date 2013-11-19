@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>854</width>
-    <height>363</height>
+    <width>1022</width>
+    <height>362</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -165,10 +165,21 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QListWidget" name="listWidget_details">
+   <property name="geometry">
+    <rect>
+     <x>850</x>
+     <y>60</y>
+     <width>171</width>
+     <height>281</height>
+    </rect>
+   </property>
+  </widget>
   <zorder>label_listeDossiers</zorder>
   <zorder>pushButton_help</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>tableWidget_dossiers</zorder>
+  <zorder>listWidget_details</zorder>
  </widget>
  <resources/>
  <connections/>

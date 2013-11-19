@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Sat Nov 16 20:34:23 2013
+# Created: Mon Nov 18 21:50:43 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_GeoFoncierConsultation(object):
     def setupUi(self, GeoFoncierConsultation):
         GeoFoncierConsultation.setObjectName(_fromUtf8("GeoFoncierConsultation"))
-        GeoFoncierConsultation.resize(854, 363)
+        GeoFoncierConsultation.resize(1022, 362)
         self.pushButton_help = QtGui.QPushButton(GeoFoncierConsultation)
         self.pushButton_help.setGeometry(QtCore.QRect(800, 340, 51, 24))
         self.pushButton_help.setObjectName(_fromUtf8("pushButton_help"))
@@ -79,6 +79,9 @@ class Ui_GeoFoncierConsultation(object):
         self.tableWidget_dossiers.setObjectName(_fromUtf8("tableWidget_dossiers"))
         self.tableWidget_dossiers.setColumnCount(0)
         self.tableWidget_dossiers.setRowCount(0)
+        self.listWidget_details = QtGui.QListWidget(GeoFoncierConsultation)
+        self.listWidget_details.setGeometry(QtCore.QRect(850, 60, 171, 281))
+        self.listWidget_details.setObjectName(_fromUtf8("listWidget_details"))
 
         self.retranslateUi(GeoFoncierConsultation)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)

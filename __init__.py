@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- GeoFoncierConsultation
+ GeoFoncierConsultationDetails
                                  A QGIS plugin
  Plugin  de diffusion des dossiers aux clients GéoFoncier
                              -------------------
@@ -22,6 +22,6 @@
 """
 
 def classFactory(iface):
-    # load GeoFoncierConsultation class from file GeoFoncierConsultation
-    from geofoncierconsultation import GeoFoncierConsultation
-    return GeoFoncierConsultation(iface)
+    # load GeoFoncierConsultationDetails class from file GeoFoncierConsultationDetails
+    from geofoncierconsultation import GeoFoncierConsultationDetails
+    return GeoFoncierConsultationDetails(iface)
