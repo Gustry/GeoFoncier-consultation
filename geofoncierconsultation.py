@@ -39,6 +39,7 @@ from fileinput import close
 class GeoFoncierConsultationDetails:
     
     dossier = None
+    connexionAPI = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -100,6 +101,9 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
             
     def listerDossiers(self):
+        
+        global connexionAPI
+        
         self.dlg.ui.label_listeDossiers.setText("Recherche en cours")
         self.dlg.ui.label_listeDossiers.show()
         self.dlg.ui.label_login.setDisabled(True)
@@ -167,26 +171,19 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.tableWidget_dossiers.show()
 
     def getArchive(self,row):
+        global connexionAPI
         dossier = Dossier.getDossier(row)
-        login = self.dlg.ui.lineEdit_login.text()
-        password = self.dlg.ui.lineEdit_password.text()
-        zone = str(self.dlg.ui.comboBox_zone.currentText())
-        connexionAPI = ConnexionClientGF(login, password, zone)
         connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
         
     def getDetails(self,row):
+        global connexionAPI
         global dossier
         self.dlg.ui.listWidget_details.clear()
         dossier = Dossier.getDossier(row)
 
         if dossier.getGeometrie() == None:
-            login = self.dlg.ui.lineEdit_login.text()
-            password = self.dlg.ui.lineEdit_password.text()
-            zone = str(self.dlg.ui.comboBox_zone.currentText())
-            connexionAPI = ConnexionClientGF(login, password, zone)
             dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
             
-        
         self.dlg.ui.label_reference.setText(dossier.reference)
         self.dlg.ui.label_structure.setText(dossier.structure_ge)
         self.dlg.ui.label_commune.setText(dossier.nom_commune)
@@ -203,11 +200,8 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.tabWidget.setCurrentIndex(1)
 
     def getExternalDocument(self):
+        global connexionAPI
         row = self.dlg.ui.listWidget_details.currentRow()
-        login = self.dlg.ui.lineEdit_login.text()
-        password = self.dlg.ui.lineEdit_password.text()
-        zone = str(self.dlg.ui.comboBox_zone.currentText())
-        connexionAPI = ConnexionClientGF(login, password, zone)
         connexionAPI.getExternalLinkBis(dossier.getURLDocument(row))
                 
     def run(self):
