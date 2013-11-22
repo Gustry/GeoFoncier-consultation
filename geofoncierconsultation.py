@@ -152,8 +152,6 @@ class GeoFoncierConsultationDetails:
             
             self.buttonGroupArchive = QButtonGroup()
             self.buttonGroupArchive.buttonClicked[int].connect(self.getArchive)
-            #self.buttonGroupDetails = QButtonGroup()
-            #self.buttonGroupDetails.buttonClicked[int].connect(self.getDetails)
             
             for row,dossier in enumerate(Dossier.listeDossiers):
                 element = dossier.getInformations()
@@ -166,10 +164,6 @@ class GeoFoncierConsultationDetails:
                 button = QPushButton("Archive")
                 self.buttonGroupArchive.addButton(button, row)
                 self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 5, button)
-                
-                #button = QPushButton("Voir")
-                #self.buttonGroupDetails.addButton(button, row)
-                #self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 6, button)
             
             self.dlg.ui.tableWidget_dossiers.cellClicked.connect(self.getDetails)
             self.dlg.ui.tableWidget_dossiers.resizeColumnsToContents();
