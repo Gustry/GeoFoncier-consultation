@@ -24,7 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 # Initialize Qt resources from file resources.py
-import resources
+import resources, urllib2
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 
@@ -135,6 +135,9 @@ class GeoFoncierConsultationDetails:
             self.run()
         except NoResult, e:
             self.errorWindow("Aucun dossier pour ce territoire")
+            self.run()
+        except IOError, e:
+            self.errorWindow(self.dlg.trUtf8("Erreur de connexion réseau à GéoFoncier"))
             self.run()
         else:
             Dossier.loadFromCSV(listeDossierCSV)
