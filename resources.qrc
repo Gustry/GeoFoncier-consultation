@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/geofoncierconsultation" >
+    <qresource prefix="/plugins/GeoFoncierConsultation" >
         <file>icon.png</file>
     </qresource>
 </RCC>

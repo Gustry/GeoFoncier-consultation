@@ -24,7 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 # Initialize Qt resources from file resources.py
-#import resources_rc
+import resources
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 
@@ -63,7 +63,7 @@ class GeoFoncierConsultationDetails:
     def initGui(self):
         # Create action that will start plugin configuration
         self.action = QAction(
-            QIcon(":/plugins/geofoncierconsultation/icon.png"),
+            QIcon(":/plugins/GeoFoncierConsultation/icon.png"),
             u"GéoFoncier", self.iface.mainWindow())
         # connect the action to the run method
         self.action.triggered.connect(self.run)
