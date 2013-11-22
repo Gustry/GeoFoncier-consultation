@@ -58,5 +58,10 @@ class ConnexionClientGF:
         except IOError, e:
             raise e
             
-    def getListeDossiers(self):
-        return self.get("dossiers?output=csv&zone="+self.zone)
+    def getListeDossiers(self,format="csv"):
+        if format == "csv":
+            return self.get("dossiers?output=csv&zone="+self.zone)
+        elif format == "kml":
+            return self.get("dossiers?output=kml&zone="+self.zone)
+        else:
+            raise Exception, "No Format"

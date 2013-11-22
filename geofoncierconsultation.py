@@ -75,9 +75,10 @@ class GeoFoncierConsultationDetails:
         #Ajout du connecteur bouton d'aide
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
+        QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
+        
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
-        #QObject.connect(self.dlg.ui.pushButton_quitter, SIGNAL("clicked()"), self.quitter())
 
     def unload(self):
         # Remove the plugin menu item and icon
@@ -173,6 +174,8 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.tableWidget_dossiers.resizeRowsToContents();
             self.dlg.ui.tableWidget_dossiers.show()
             self.dlg.ui.label_listeDossiers.show()
+            self.dlg.ui.comboBox_format.show()
+            self.dlg.ui.pushButton_enregistrer_dossiers.show()
             
             msgBox.close()
 
@@ -180,6 +183,33 @@ class GeoFoncierConsultationDetails:
         global connexionAPI
         dossier = Dossier.getDossier(row)
         connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
+
+    def enregistrerDossiers(self):
+        format = self.dlg.ui.comboBox_format.currentText()
+        filename = ""
+        if format == "csv":
+            filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.csv", "conf")
+        else:
+            filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.kml", "conf")
+        
+        if filename:
+            msgBox = QProgressDialog("Enregistrement en cours","Annuler",0,0)
+            msgBox.setValue(-1)
+            msgBox.setWindowTitle("Enregistrement des dossiers")
+            msgBox.setAutoReset(True)
+            msgBox.setAutoClose(False)
+            msgBox.open()
+            QApplication.processEvents()
+            
+            global connexionAPI
+            
+            file=QFile(filename)
+            file.open(QIODevice.WriteOnly)
+            file.write(connexionAPI.getListeDossiers(format))
+            file.close()
+            msgBox.close()
+
+            
         
     def getDetails(self):
         msgBox = QProgressDialog("Chargement","Annuler",0,0)
@@ -248,6 +278,8 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.label_listeDossiers.hide()
         self.dlg.ui.tableWidget_dossiers.hide()
         self.dlg.ui.tableWidget_dossiers.clearContents()
+        self.dlg.ui.comboBox_format.hide()
+        self.dlg.ui.pushButton_enregistrer_dossiers.hide()
         del Dossier.listeDossiers[:]
         self.dlg.show()
 
