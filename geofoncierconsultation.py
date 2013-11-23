@@ -86,14 +86,14 @@ class GeoFoncierConsultationDetails:
         self.iface.removeToolBarIcon(self.action)
           
     def aboutWindow(self):
-        infoString = QCoreApplication.translate('GéoFoncier', self.dlg.trUtf8("Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong>"))
-        QMessageBox.information(self.dlg,self.dlg.trUtf8("GéoFoncier"), infoString)
+        infoString = QCoreApplication.translate('GéoFoncier', u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong>")
+        QMessageBox.information(self.dlg,u"GéoFoncier", infoString)
         
     def errorWindow(self,message):
-        QMessageBox.critical(self.dlg, self.dlg.trUtf8("GéoFoncier"), message)
+        QMessageBox.critical(self.dlg, u"GéoFoncier", message)
         
     def informationWindow(self,message):
-        QMessageBox.information(self.dlg, self.dlg.trUtf8("GéoFoncier"), message)
+        QMessageBox.information(self.dlg, u"GéoFoncier", message)
 
     def checkLineEdits(self):
         if self.dlg.ui.lineEdit_login.text() != "" and self.dlg.ui.lineEdit_password.text() != "":
@@ -132,22 +132,22 @@ class GeoFoncierConsultationDetails:
         try:
             listeDossierCSV = connexionAPI.getListeDossiers()
         except LoginException, e:
-            self.errorWindow("Mauvais nom d'utilisateur ou mot de passe")
+            self.errorWindow(u"Mauvais nom d'utilisateur ou mot de passe")
             self.run()
         except NoResult, e:
-            self.errorWindow("Aucun dossier pour ce territoire")
+            self.errorWindow(u"Aucun dossier pour ce territoire")
             self.run()
         except IOError, e:
-            self.errorWindow(self.dlg.trUtf8("Erreur de connexion réseau à GéoFoncier"))
+            self.errorWindow(u"Erreur de connexion réseau à GéoFoncier")
             self.run()
         else:
             Dossier.loadFromCSV(listeDossierCSV)
             
             nombreDossiers = Dossier.getNbrDossiers()
             if nombreDossiers == 1 :
-                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ self.dlg.trUtf8(" dossier trouvé"))
+                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ u" dossier trouvé")
             else :
-                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ self.dlg.trUtf8(" dossiers trouvés"))
+                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ u" dossiers trouvés")
                 
             #Remplissage de la tableView
             self.dlg.ui.tableWidget_dossiers.setColumnCount(6)
@@ -267,7 +267,7 @@ class GeoFoncierConsultationDetails:
         
         self.dlg.ui.tabWidget.setTabEnabled(1, False);
         self.dlg.ui.tabWidget.setTabText(0,"Dossiers")
-        self.dlg.ui.tabWidget.setTabText(1,self.dlg.trUtf8("Détails"))
+        self.dlg.ui.tabWidget.setTabText(1,u"Détails")
         self.dlg.ui.label_login.setDisabled(False)
         self.dlg.ui.label_password.setDisabled(False)
         self.dlg.ui.label_zone.setDisabled(False)
