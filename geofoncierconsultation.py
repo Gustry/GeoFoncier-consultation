@@ -40,6 +40,7 @@ class GeoFoncierConsultationDetails:
     
     dossier = None
     connexionAPI = None
+    listeDossierCSV = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -111,7 +112,7 @@ class GeoFoncierConsultationDetails:
         msgBox.open()
         QApplication.processEvents()
         
-        global connexionAPI
+        global connexionAPI, listeDossierCSV
         
         self.dlg.ui.label_login.setDisabled(True)
         self.dlg.ui.label_password.setDisabled(True)
@@ -196,20 +197,23 @@ class GeoFoncierConsultationDetails:
         
         if filename:
             self.dlg.setCursor(Qt.WaitCursor)
-            msgBox = QProgressDialog("Enregistrement en cours","Annuler",0,0)
+            msgBox = QProgressDialog("Chargement","Annuler",0,0)
             msgBox.setValue(-1)
-            msgBox.setWindowTitle("Enregistrement des dossiers")
+            msgBox.setWindowTitle("Chargement des dossiers")
             msgBox.setAutoReset(True)
             msgBox.setAutoClose(False)
             msgBox.open()
             QApplication.processEvents()
             
-            global connexionAPI
-            
+            global connexionAPI, listeDossierCSV
+
             file=QFile(filename)
             if file.open(QIODevice.WriteOnly):
-                result = file.write(connexionAPI.getListeDossiers(format))
-                QApplication.processEvents()
+                result = ""
+                if format == "csv":
+                    result = listeDossierCSV
+                else:
+                    result = file.write(connexionAPI.getListeDossiers(format))
                 file.close()
                 msgBox.close()
                 if result < 1:
@@ -217,7 +221,7 @@ class GeoFoncierConsultationDetails:
             else:
                 self.errorWindow(u"Erreur de permission")
             self.dlg.setCursor(Qt.ArrowCursor)
-
+            
         
     def getDetails(self):
         self.dlg.setCursor(Qt.WaitCursor)
