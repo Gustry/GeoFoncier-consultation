@@ -30,7 +30,7 @@ from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 
 from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
-from exception import LoginException, NoResult
+from exception import *
 
 import os.path
 from fileinput import close
@@ -207,13 +207,17 @@ class GeoFoncierConsultationDetails:
             global connexionAPI
             
             file=QFile(filename)
-            file.open(QIODevice.WriteOnly)
-            file.write(connexionAPI.getListeDossiers(format))
-            file.close()
-            msgBox.close()
+            if file.open(QIODevice.WriteOnly):
+                result = file.write(connexionAPI.getListeDossiers(format))
+                QApplication.processEvents()
+                file.close()
+                msgBox.close()
+                if result < 1:
+                    self.errorWindow(u"Erreur d'enregistrement du fichier")
+            else:
+                self.errorWindow(u"Erreur de permission")
             self.dlg.setCursor(Qt.ArrowCursor)
 
-            
         
     def getDetails(self):
         self.dlg.setCursor(Qt.WaitCursor)
@@ -259,6 +263,7 @@ class GeoFoncierConsultationDetails:
     def run(self):
         #Initialisation
         self.dlg.setFixedSize(self.dlg.size());
+        self.dlg.setCursor(Qt.ArrowCursor)
         
         #Load zone
         try:
