@@ -102,6 +102,7 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
             
     def listerDossiers(self):
+        self.dlg.setCursor(Qt.WaitCursor)
         msgBox = QProgressDialog("Chargement","Annuler",0,0)
         msgBox.setValue(-1)
         msgBox.setWindowTitle("Chargement des dossiers")
@@ -178,6 +179,7 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.pushButton_enregistrer_dossiers.show()
             
             msgBox.close()
+            self.dlg.setCursor(Qt.ArrowCursor)
 
     def getArchive(self,row):
         global connexionAPI
@@ -193,6 +195,7 @@ class GeoFoncierConsultationDetails:
             filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.kml", "conf")
         
         if filename:
+            self.dlg.setCursor(Qt.WaitCursor)
             msgBox = QProgressDialog("Enregistrement en cours","Annuler",0,0)
             msgBox.setValue(-1)
             msgBox.setWindowTitle("Enregistrement des dossiers")
@@ -208,10 +211,12 @@ class GeoFoncierConsultationDetails:
             file.write(connexionAPI.getListeDossiers(format))
             file.close()
             msgBox.close()
+            self.dlg.setCursor(Qt.ArrowCursor)
 
             
         
     def getDetails(self):
+        self.dlg.setCursor(Qt.WaitCursor)
         msgBox = QProgressDialog("Chargement","Annuler",0,0)
         msgBox.setValue(-1)
         msgBox.setWindowTitle("Chargement du dossier")
@@ -244,6 +249,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
         self.dlg.ui.tabWidget.setCurrentIndex(1)
         msgBox.close()
+        self.dlg.setCursor(Qt.ArrowCursor)
 
     def getExternalDocument(self):
         global connexionAPI
