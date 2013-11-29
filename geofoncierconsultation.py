@@ -77,6 +77,8 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
+        QObject.connect(self.dlg.ui.pushButton_voirCouche, SIGNAL("clicked()"), self.voirCoucheQGIS)
+        QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
@@ -182,6 +184,10 @@ class GeoFoncierConsultationDetails:
             msgBox.close()
             self.dlg.setCursor(Qt.ArrowCursor)
 
+    def enregistrerZIP(self):
+        global connexionAPI,dossier
+        connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
+        
     def getArchive(self,row):
         global connexionAPI
         dossier = Dossier.getDossier(row)
@@ -263,6 +269,9 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.tabWidget.setCurrentIndex(1)
         msgBox.close()
         self.dlg.setCursor(Qt.ArrowCursor)
+        
+    def voirCoucheQGIS(self):
+        self.informationWindow(u"Bientôt disponible, en cours de dév")
 
     def getExternalDocument(self):
         global connexionAPI

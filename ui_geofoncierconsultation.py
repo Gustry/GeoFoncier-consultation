@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Fri Nov 29 10:20:27 2013
+# Created: Fri Nov 29 10:39:56 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -137,10 +137,16 @@ class Ui_GeoFoncierConsultation(object):
         self.label_date = QtGui.QLabel(self.layoutWidget1)
         self.label_date.setObjectName(_fromUtf8("label_date"))
         self.verticalLayout.addWidget(self.label_date)
+        self.pushButton_ZIP = QtGui.QPushButton(self.tab_2)
+        self.pushButton_ZIP.setGeometry(QtCore.QRect(320, 240, 93, 24))
+        self.pushButton_ZIP.setObjectName(_fromUtf8("pushButton_ZIP"))
+        self.pushButton_voirCouche = QtGui.QPushButton(self.tab_2)
+        self.pushButton_voirCouche.setGeometry(QtCore.QRect(320, 210, 93, 24))
+        self.pushButton_voirCouche.setObjectName(_fromUtf8("pushButton_voirCouche"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -170,5 +176,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_commune.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.label_insee.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.label_date.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
+        self.pushButton_ZIP.setText(_translate("GeoFoncierConsultation", "Archive ZIP", None))
+        self.pushButton_voirCouche.setText(_translate("GeoFoncierConsultation", "Carte", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("GeoFoncierConsultation", "Tab 2", None))
 

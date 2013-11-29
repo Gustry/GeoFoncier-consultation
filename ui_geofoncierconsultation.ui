@@ -131,7 +131,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -310,6 +310,32 @@
        </widget>
       </item>
      </layout>
+    </widget>
+    <widget class="QPushButton" name="pushButton_ZIP">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>240</y>
+       <width>93</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Archive ZIP</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_voirCouche">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>210</y>
+       <width>93</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Carte</string>
+     </property>
     </widget>
    </widget>
   </widget>
