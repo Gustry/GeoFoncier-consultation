@@ -27,7 +27,6 @@ from qgis.core import *
 import resources, urllib2
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
-
 from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
 from exception import *
@@ -186,12 +185,12 @@ class GeoFoncierConsultationDetails:
 
     def enregistrerZIP(self):
         global connexionAPI,dossier
-        connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
+        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossiers.zip")
         
     def getArchive(self,row):
         global connexionAPI
         dossier = Dossier.getDossier(row)
-        connexionAPI.getExternalLink(dossier.getURLArchiveZIP())
+        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossiers.zip")
 
     def enregistrerDossiers(self):
         format = self.dlg.ui.comboBox_format.currentText()

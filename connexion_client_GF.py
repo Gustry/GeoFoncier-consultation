@@ -8,7 +8,9 @@ Created on 11 nov. 2013
 import urllib2, base64
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from Downloader import Downloader
 from exception import LoginException, NoResult
+from PyQt4 import QtNetwork
 
 class ConnexionClientGF:
 
@@ -17,8 +19,12 @@ class ConnexionClientGF:
         zonesDisponibles = ("metropole", "antilles", "guyane", "reunion", "mayotte")
         if zone not in zonesDisponibles:
             raise Exception, "Zone non disponible" 
-        
+        self.login = login
+        self.password = password
         self.authentification = self.createLogin(login, password)
+        self.qauthentification = QtNetwork.QAuthenticator()
+        self.qauthentification.setUser(login)
+        self.qauthentification.setPassword(password)
         self.zone = zone
         self.url = self.getURLAPI(login, password)
     
@@ -32,9 +38,18 @@ class ConnexionClientGF:
         base64string = base64.encodestring('%s:%s' % (login, password))
         return "Basic %s" % base64string
 
+    def getQAuthenticator(self):
+        return self.qauthentification
+    
+    def getAndSaveExternalDocument(self,ui,component,nameFile):
+        Downloader(self.login,self.password,self.url+component,nameFile,ui)
+
     def getExternalLink(self,component):
         desktopService = QDesktopServices()
         desktopService.openUrl(QUrl(self.url+component))
+    
+    def getExternalURL(self,component):
+        return self.url+component
 
     def get(self, composante):
         url = self.url+composante
