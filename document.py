@@ -8,14 +8,13 @@ Created on 28 nov. 2013
 
 class Document:
     
-    def __init__(self,description, fichier, type, territoire):
+    def __init__(self,identifiant, description, extension):
+        self.identifiant = identifiant
         self.description = description
-        self.fichier = fichier
-        self.type = type
-        self.territoire = territoire
+        self.extension = extension
         
     def getDescription(self):
         return self.description
     
     def getURL(self):
-        return("documents/fichier/"+self.territoire+self.fichier)
+        return("documents/fichier/"+self.identifiant)

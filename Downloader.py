@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*- 
 from PyQt4.QtCore import QUrl, QFileInfo, QFile, QIODevice
 from PyQt4.QtGui import QApplication, QFileDialog, QDialog, QProgressBar, QLabel, QPushButton, QDialogButtonBox, \
                     QVBoxLayout, QMessageBox
 from PyQt4.QtNetwork import QHttp
+from urlparse import urlparse, parse_qs
+from openlayers_plugin.openlayers_ovwidget import QString
 
 
 class Downloader(QDialog):
@@ -12,6 +15,9 @@ class Downloader(QDialog):
         self.login = login
         self.password = password
         self.nameFile = nameFile
+        
+        urlparse(self.url_to_download).query
+        self.parameters = parse_qs(urlparse(url).query)
         
         self.httpGetId = 0
         self.httpRequestAborted = False
@@ -42,8 +48,7 @@ class Downloader(QDialog):
 
     def downloadFile(self):
         url = QUrl(self.url_to_download)
-        fileInfo = QFileInfo(url.path())
-        fileName = fileInfo.fileName()
+
         fileName = QFileDialog.getSaveFileName(self, "Enregistrer la liste des dossiers", self.nameFile, "conf")
 
         if QFile.exists(fileName):
@@ -62,14 +67,17 @@ class Downloader(QDialog):
             port = 0
         self.http.setHost(url.host(), mode, port)
         self.httpRequestAborted = False
-
         path = QUrl.toPercentEncoding(url.path(), "!$&'()*+,;=:@/")
         if path:
             path = str(path)
         else:
             path = '/'
 
-        # Download the file.
+        #Hack parameters
+        path = path+("?")
+        for item in url.queryItems():
+            path = path + item[0] + "=" + item[1] + "&" 
+        
         self.http.setUser(self.login, self.password)
         self.httpGetId = self.http.get(path, self.outFile)
 
@@ -97,12 +105,13 @@ class Downloader(QDialog):
             QMessageBox.information(self, 'Error',
                     'Download failed: %s.' % self.http.errorString())
 
-        self.statusLabel.setText('Enregistrement ok') 
+        self.statusLabel.setText('Enregistrement ok')
         self.close()      
 
     def readResponseHeader(self, responseHeader):
         # Check for genuine error conditions.
         if responseHeader.statusCode() not in (200, 300, 301, 302, 303, 307):
+            print responseHeader.statusCode()
             QMessageBox.information(self, 'Error',
                     'Download failed: %s.' % responseHeader.reasonPhrase())
             self.httpRequestAborted = True

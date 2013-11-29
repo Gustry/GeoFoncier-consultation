@@ -185,88 +185,57 @@ class GeoFoncierConsultationDetails:
 
     def enregistrerZIP(self):
         global connexionAPI,dossier
-        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossiers.zip")
+        print dossier.getReference()
+        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossier_"+dossier.getReference()+".zip")
         
     def getArchive(self,row):
         global connexionAPI
         dossier = Dossier.getDossier(row)
-        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossiers.zip")
+        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossier_"+dossier.getReference()+".zip")
 
     def enregistrerDossiers(self):
         format = self.dlg.ui.comboBox_format.currentText()
-        filename = ""
-        if format == "csv":
-            filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.csv", "conf")
-        elif format == "kml":
-            filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.kml", "conf")
-        elif format == "xml":
-            filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.xml", "conf")
-        else:
-            self.errorWindow(u"Erreur de format")
-        
-        if filename:
-            self.dlg.setCursor(Qt.WaitCursor)
-            msgBox = QProgressDialog("Chargement","Annuler",0,0)
-            msgBox.setValue(-1)
-            msgBox.setWindowTitle("Chargement des dossiers")
-            msgBox.setAutoReset(True)
-            msgBox.setAutoClose(False)
-            msgBox.open()
-            QApplication.processEvents()
-            
-            global connexionAPI, listeDossierCSV
-
-            file=QFile(filename)
-            if file.open(QIODevice.WriteOnly):
-                result = ""
-                if format == "csv":
-                    result = listeDossierCSV
-                else:
-                    result = file.write(connexionAPI.getListeDossiers(format))
-                file.close()
-                msgBox.close()
-                if result < 1:
-                    self.errorWindow(u"Erreur d'enregistrement du fichier")
-            else:
-                self.errorWindow(u"Erreur de permission")
-            self.dlg.setCursor(Qt.ArrowCursor)
-            
+        global connexionAPI
+        if format in ('csv', 'kml', 'xml'):
+            filename = "mes_dossiers."+format
+            connexionAPI.getAndSaveExternalDocument(self.dlg,connexionAPI.getURLListeDossiers(format),filename)
         
     def getDetails(self):
-        self.dlg.setCursor(Qt.WaitCursor)
-        msgBox = QProgressDialog("Chargement","Annuler",0,0)
-        msgBox.setValue(-1)
-        msgBox.setWindowTitle("Chargement du dossier")
-        msgBox.setAutoReset(True)
-        msgBox.setAutoClose(False)
-        msgBox.open()
-        QApplication.processEvents()
-
         global connexionAPI
         global dossier
         self.dlg.ui.listWidget_details.clear()
         row = self.dlg.ui.tableWidget_dossiers.currentItem().row()
         dossier = Dossier.getDossier(row)
-
+        
         if dossier.getGeometrie() == None:
+            self.dlg.setCursor(Qt.WaitCursor)
+            msgBox = QProgressDialog("Chargement","Annuler",0,0)
+            msgBox.setValue(-1)
+            msgBox.setWindowTitle("Chargement du dossier")
+            msgBox.setAutoReset(True)
+            msgBox.setAutoClose(False)
+            msgBox.open()
+            QApplication.processEvents()
+    
             dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
-            
-        self.dlg.ui.label_reference.setText(dossier.reference)
-        self.dlg.ui.label_structure.setText(dossier.structure_ge)
-        self.dlg.ui.label_commune.setText(dossier.nom_commune)
-        self.dlg.ui.label_date.setText(dossier.date)
-        self.dlg.ui.label_insee.setText(dossier.insee_commune)
+            msgBox.close()
+        
+        self.dlg.ui.label_reference.setText(self.dlg.trUtf8(dossier.reference))
+        self.dlg.ui.label_structure.setText(self.dlg.trUtf8(dossier.structure_ge))
+        self.dlg.ui.label_commune.setText(self.dlg.trUtf8(dossier.nom_commune))
+        self.dlg.ui.label_date.setText(self.dlg.trUtf8(dossier.date))
+        self.dlg.ui.label_insee.setText(self.dlg.trUtf8(dossier.insee_commune))
         QApplication.processEvents()
         for i,doc in enumerate(dossier.getDocuments()):
             item = QListWidgetItem()
             description = doc.getDescription()
-            print description
             item.setText(self.dlg.trUtf8(description));
             self.dlg.ui.listWidget_details.addItem(item);
+        
+        self.dlg.ui.listWidget_details.clicked.disconnect(self.getExternalDocument)
         self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
         self.dlg.ui.tabWidget.setCurrentIndex(1)
-        msgBox.close()
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
