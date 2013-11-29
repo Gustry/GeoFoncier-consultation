@@ -192,8 +192,12 @@ class GeoFoncierConsultationDetails:
         filename = ""
         if format == "csv":
             filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.csv", "conf")
-        else:
+        elif format == "kml":
             filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.kml", "conf")
+        elif format == "xml":
+            filename = QFileDialog.getSaveFileName(self.dlg, "Enregistrer la liste des dossiers", "mes_dossiers.xml", "conf")
+        else:
+            self.errorWindow(u"Erreur de format")
         
         if filename:
             self.dlg.setCursor(Qt.WaitCursor)

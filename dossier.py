@@ -30,10 +30,10 @@ class Dossier:
         return Dossier.listeDossiers[row]
     getDossier = classmethod(getDossier)
     
-    def printDossiers(cls) :
-        for i,dossier in enumerate(Dossier.listeDossiers):
-            print str(i) + " " + str(dossier.id)
-    printDossiers = classmethod(printDossiers)
+    #def printDossiers(cls) :
+    #    for i,dossier in enumerate(Dossier.listeDossiers):
+    #        print str(i) + " " + str(dossier.id)
+    #printDossiers = classmethod(printDossiers)
     
     def __init__(self,url,structure_ge,reference,nom_commune,insee_commune,date,geometrie_kml = None):
         self.id = self.getID(url)
@@ -69,7 +69,6 @@ class Dossier:
         return self.geometrie_kml
     
     def loadDetails(self,data):
-        print data
         tree = ET.parse(StringIO.StringIO(data))
         root = tree.getroot()
         for child in root[0]:
@@ -82,8 +81,8 @@ class Dossier:
                 
             if child.tag == "document":
                 if child[0].tag == "description" and child[1].tag == "fichier":
-                    resultat = re.search("^(FR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_\d[A-Z][A-Z][a-z]_\d).([a-z]*)$",child[1].text)
+                    parseFichier = re.search("^(FR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_\d[A-Z][A-Z][a-z]_\d).([a-z]*)$",child[1].text)
                     parseURL = re.search("^https://(api-geofoncier.brgm-rec.fr|api.geofoncier.fr)/clientsge/documents/([a-z])FR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d)$",child[2].attrib["href"])
-                    self.document.append(Document(child[0].text,resultat.group(1),resultat.group(2), parseURL.group(2)))
+                    self.document.append(Document(child[0].text,parseFichier.group(1),parseFichier.group(2), parseURL.group(2)))
                 else:
                     raise ErreurAPI, "Changement de l'API"

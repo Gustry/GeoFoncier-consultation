@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Fri Nov 22 21:21:34 2013
+# Created: Fri Nov 29 10:20:27 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -99,6 +99,7 @@ class Ui_GeoFoncierConsultation(object):
         self.comboBox_format.setObjectName(_fromUtf8("comboBox_format"))
         self.comboBox_format.addItem(_fromUtf8(""))
         self.comboBox_format.addItem(_fromUtf8(""))
+        self.comboBox_format.addItem(_fromUtf8(""))
         self.horizontalLayout_2.addWidget(self.comboBox_format)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
@@ -160,7 +161,8 @@ class Ui_GeoFoncierConsultation(object):
         self.label_listeDossiers.setText(_translate("GeoFoncierConsultation", "Dossiers", None))
         self.pushButton_enregistrer_dossiers.setText(_translate("GeoFoncierConsultation", "Enregistrer les dossiers en", None))
         self.comboBox_format.setItemText(0, _translate("GeoFoncierConsultation", "kml", None))
-        self.comboBox_format.setItemText(1, _translate("GeoFoncierConsultation", "csv", None))
+        self.comboBox_format.setItemText(1, _translate("GeoFoncierConsultation", "xml", None))
+        self.comboBox_format.setItemText(2, _translate("GeoFoncierConsultation", "csv", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("GeoFoncierConsultation", "Tab 1", None))
         self.label.setText(_translate("GeoFoncierConsultation", "Liste des documents à télécharger :", None))
         self.label_reference.setText(_translate("GeoFoncierConsultation", "TextLabel", None))

@@ -208,6 +208,11 @@
         </item>
         <item>
          <property name="text">
+          <string>xml</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>csv</string>
          </property>
         </item>
