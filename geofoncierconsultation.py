@@ -232,7 +232,11 @@ class GeoFoncierConsultationDetails:
             item.setText(self.dlg.trUtf8(description));
             self.dlg.ui.listWidget_details.addItem(item);
         
-        self.dlg.ui.listWidget_details.clicked.disconnect(self.getExternalDocument)
+        try:    
+            self.dlg.ui.listWidget_details.clicked.disconnect(self.getExternalDocument)
+        except TypeError:
+            pass
+        
         self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
         self.dlg.ui.tabWidget.setCurrentIndex(1)
