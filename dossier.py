@@ -6,7 +6,8 @@ Created on 11 nov. 2013
 '''
 import StringIO, csv, re
 import xml.etree.ElementTree as ET
-from exception import ErreurDossier
+from exception import ErreurDossier, ErreurAPI
+from document import Document
 
 class Dossier:
     
@@ -58,7 +59,7 @@ class Dossier:
     def getURLDossier(self):
         return "dossiers/"+self.id
 
-    def getURLDocument(self,numDocument):
+    def getDocument(self,numDocument):
         return self.document[numDocument]
     
     def getDocuments(self):
@@ -67,56 +68,8 @@ class Dossier:
     def getGeometrie(self):
         return self.geometrie_kml
     
-    def getTypeOfDocument(self,idDocument):
-        result = []
-        resultat = re.search("^documents/mFR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d)$",self.document[idDocument])
-        if resultat:
-            type = resultat.group(1)
-            if type == "1PVa":
-                    result.append("Procès-verbal avec plan foncier ou croquis")
-            elif type == "1PVb":
-                    result.append("Procès-verbal seul")
-            elif type == "1PVc":
-                    result.append("Procès-verbal de carence avec plan foncier ou croquis")
-            elif type == "1PVd":
-                    result.append("Procès-verbal de carence seul")
-            elif type == "2PLa":
-                    result.append("Plan foncier")
-            elif type == "2PLb":
-                    result.append("Croquis foncier")
-            elif type == "2PLc":
-                    result.append("Plan autre que foncier")
-            elif type == "2PLd":
-                    result.append("Croquis autre que foncier")
-            elif type == "2PLe":
-                    result.append("Esquisse")
-            elif type == "3AMa":
-                    result.append("Croquis de conservation Alsace-Moselle")
-            elif type == "5COa":
-                    result.append("Règlement de copropriété")
-            elif type == "5COb":
-                    result.append("Etat descriptif de division")
-            elif type == "6CAa":
-                    result.append("Extrait cadastral")
-            elif type == "6CAb":
-                    result.append("DMPC / DA")
-            elif type == "7POa":
-                    result.append("Pouvoir")
-            elif type ==  "7POb":
-                    result.append("Courrier")
-            elif type == "8PHa":
-                    result.append("Photographie")
-            elif type == "9DIa":
-                    result.append("Plan de situation")
-            elif type ==  "9DIz":
-                    result.append("Autre document")
-            else:
-                    print "erreur de doc"
-                    
-            result.append(resultat.group(2))            
-        return result
-    
     def loadDetails(self,data):
+        print data
         tree = ET.parse(StringIO.StringIO(data))
         root = tree.getroot()
         for child in root[0]:
@@ -128,6 +81,9 @@ class Dossier:
                 self.geometrie_kml = "dossier en memoire"
                 
             if child.tag == "document":
-                href = child[0].attrib["href"]
-                resultat = re.search("^https://(api-geofoncier.brgm-rec.fr|api.geofoncier.fr)/clientsge/(documents/mFR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d))$",href)
-                self.document.append(resultat.group(2))
+                if child[0].tag == "description" and child[1].tag == "fichier":
+                    resultat = re.search("^(FR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_\d[A-Z][A-Z][a-z]_\d).([a-z]*)$",child[1].text)
+                    parseURL = re.search("^https://(api-geofoncier.brgm-rec.fr|api.geofoncier.fr)/clientsge/documents/([a-z])FR_[a-zA-Z0-9]{11}_[a-zA-Z0-9 ]*_(\d[A-Z][A-Z][a-z])_(\d)$",child[2].attrib["href"])
+                    self.document.append(Document(child[0].text,resultat.group(1),resultat.group(2), parseURL.group(2)))
+                else:
+                    raise ErreurAPI, "Changement de l'API"

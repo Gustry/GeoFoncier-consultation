@@ -11,3 +11,6 @@ class NoResult(Exception):
 
 class ErreurDossier(Exception):
     pass
+
+class ErreurAPI(Exception):
+    pass

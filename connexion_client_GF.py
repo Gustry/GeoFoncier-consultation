@@ -64,4 +64,4 @@ class ConnexionClientGF:
         elif format == "kml":
             return self.get("dossiers?output=kml&zone="+self.zone)
         else:
-            raise Exception, "No Format"
+            return self.get("dossiers?zone="+self.zone)

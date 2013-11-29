@@ -250,8 +250,9 @@ class GeoFoncierConsultationDetails:
         QApplication.processEvents()
         for i,doc in enumerate(dossier.getDocuments()):
             item = QListWidgetItem()
-            tab = dossier.getTypeOfDocument(i)
-            item.setText(self.dlg.trUtf8(tab[0]));
+            description = doc.getDescription()
+            print description
+            item.setText(self.dlg.trUtf8(description));
             self.dlg.ui.listWidget_details.addItem(item);
         self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
@@ -262,7 +263,8 @@ class GeoFoncierConsultationDetails:
     def getExternalDocument(self):
         global connexionAPI
         row = self.dlg.ui.listWidget_details.currentRow()
-        connexionAPI.getExternalLink(dossier.getURLDocument(row))
+        doc = dossier.getDocument(row)
+        connexionAPI.getExternalLink(doc.getURL())
                 
     def run(self):
         #Initialisation
