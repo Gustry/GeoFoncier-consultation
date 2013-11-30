@@ -46,6 +46,7 @@ class GeoFoncierConsultationDetails:
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
+        self.canvas = self.iface.mapCanvas()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
@@ -308,12 +309,12 @@ class GeoFoncierConsultationDetails:
                         for m in range(0, g.GetGeometryCount()):
                             n = g.GetGeometryRef(m)
                             
-                            if g.GetGeometryType() == 1:
+                            if n.GetGeometryType() == 1:
                                 fet = QgsFeature()
                                 fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
                                 pr.addFeatures( [ fet ] )
                                 
-                            if g.GetGeometryType() == 3:
+                            if n.GetGeometryType() == 3:
                                 fet = QgsFeature()
                                 fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
                                 prPoly.addFeatures( [ fet ] )
@@ -329,8 +330,11 @@ class GeoFoncierConsultationDetails:
         if vl.featureCount() > 0 :
             QgsMapLayerRegistry.instance().addMapLayer(vl)
         vPoly.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
-        #if vPoly.featureCount() > 0 :
-        QgsMapLayerRegistry.instance().addMapLayer(vPoly)
+        if vPoly.featureCount() > 0 :
+            QgsMapLayerRegistry.instance().addMapLayer(vPoly)
+        
+        self.canvas.zoomToFullExtent()
+        
 
     def getExternalDocument(self):
         global connexionAPI
