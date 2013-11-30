@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Fri Nov 29 10:39:56 2013
+# Created: Sat Nov 30 17:18:44 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -92,6 +92,11 @@ class Ui_GeoFoncierConsultation(object):
         self.horizontalLayout_2.addWidget(self.label_listeDossiers)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
+        self.pushButton_couche_osm = QtGui.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_couche_osm.setObjectName(_fromUtf8("pushButton_couche_osm"))
+        self.horizontalLayout_2.addWidget(self.pushButton_couche_osm)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem1)
         self.pushButton_enregistrer_dossiers = QtGui.QPushButton(self.horizontalLayoutWidget)
         self.pushButton_enregistrer_dossiers.setObjectName(_fromUtf8("pushButton_enregistrer_dossiers"))
         self.horizontalLayout_2.addWidget(self.pushButton_enregistrer_dossiers)
@@ -146,7 +151,7 @@ class Ui_GeoFoncierConsultation(object):
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -165,6 +170,7 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_help.setText(_translate("GeoFoncierConsultation", "Aide", None))
         self.tableWidget_dossiers.setSortingEnabled(True)
         self.label_listeDossiers.setText(_translate("GeoFoncierConsultation", "Dossiers", None))
+        self.pushButton_couche_osm.setText(_translate("GeoFoncierConsultation", "Couche cartographique", None))
         self.pushButton_enregistrer_dossiers.setText(_translate("GeoFoncierConsultation", "Enregistrer les dossiers en", None))
         self.comboBox_format.setItemText(0, _translate("GeoFoncierConsultation", "kml", None))
         self.comboBox_format.setItemText(1, _translate("GeoFoncierConsultation", "xml", None))

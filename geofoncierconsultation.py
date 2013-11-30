@@ -78,6 +78,7 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
         QObject.connect(self.dlg.ui.pushButton_voirCouche, SIGNAL("clicked()"), self.voirCoucheQGIS)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
+        QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
         
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
@@ -179,6 +180,7 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.label_listeDossiers.show()
             self.dlg.ui.comboBox_format.show()
             self.dlg.ui.pushButton_enregistrer_dossiers.show()
+            self.dlg.ui.pushButton_couche_osm.show()
             
             msgBox.close()
             self.dlg.setCursor(Qt.ArrowCursor)
@@ -250,6 +252,29 @@ class GeoFoncierConsultationDetails:
         row = self.dlg.ui.listWidget_details.currentRow()
         doc = dossier.getDocument(row)
         connexionAPI.getAndSaveExternalDocument(self.dlg,doc.getURL(),doc.getFileName())
+        
+    def ajouterCoucheOSM(self):
+        self.enableUseOfGlobalCrs()
+        tilesDir = os.path.join(self.plugin_dir, "tiles")
+        fileInfo = QFileInfo(os.path.join(tilesDir,"osmfr.xml"))
+        rlayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
+        
+        if not rlayer.isValid():
+            print "Layer failed to load!"
+        rlayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
+        
+        QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+        self.disableUseOfGlobalCrs()
+        
+     #set new Layers to use the Project-CRS'  
+    def enableUseOfGlobalCrs(self):  
+        self.s = QSettings()  
+        self.oldValidation = self.s.value("/Projections/defaultBehaviour")
+        self.s.setValue( "/Projections/defaultBehaviour", "useProject" )  
+    
+    #enable old settings again' 
+    def disableUseOfGlobalCrs(self):  
+        self.s.setValue( "/Projections/defaultBehaviour", self.oldValidation ) 
                 
     def run(self):
         #Initialisation
@@ -282,6 +307,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.tableWidget_dossiers.clearContents()
         self.dlg.ui.comboBox_format.hide()
         self.dlg.ui.pushButton_enregistrer_dossiers.hide()
+        self.dlg.ui.pushButton_couche_osm.hide()
         del Dossier.listeDossiers[:]
         self.dlg.show()
 

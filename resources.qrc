@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/plugins/GeoFoncierConsultation" >
         <file>icon.png</file>
+	<file alias="osmfr">tiles/osmfr.xml</file>
     </qresource>
 </RCC>
