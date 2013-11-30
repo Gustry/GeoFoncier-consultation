@@ -109,6 +109,10 @@ class Saver(QDialog):
             return
 
         self.outFile.close()
+        
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(100)
+        self.progressBar.setValue(100)
 
         if error:
             self.outFile.remove()
