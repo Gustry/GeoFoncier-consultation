@@ -249,7 +249,7 @@ class GeoFoncierConsultationDetails:
         global connexionAPI
         row = self.dlg.ui.listWidget_details.currentRow()
         doc = dossier.getDocument(row)
-        connexionAPI.getExternalLink(doc.getURL())
+        connexionAPI.getAndSaveExternalDocument(self.dlg,doc.getURL(),doc.getFileName())
                 
     def run(self):
         #Initialisation

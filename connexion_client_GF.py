@@ -8,7 +8,7 @@ Created on 11 nov. 2013
 import urllib2, base64
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from Downloader import Downloader
+from Saver import Saver
 from exception import LoginException, NoResult
 from PyQt4 import QtNetwork
 
@@ -42,7 +42,7 @@ class ConnexionClientGF:
         return self.qauthentification
     
     def getAndSaveExternalDocument(self,ui,component,nameFile):
-        Downloader(self.login,self.password,self.url+component,nameFile,ui)
+        Saver(self.login,self.password,self.url+component,nameFile,ui)
 
     def getExternalLink(self,component):
         desktopService = QDesktopServices()

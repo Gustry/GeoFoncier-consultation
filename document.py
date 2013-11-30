@@ -16,5 +16,8 @@ class Document:
     def getDescription(self):
         return self.description
     
+    def getFileName(self):
+        return self.identifiant+"."+self.extension
+    
     def getURL(self):
         return("documents/fichier/"+self.identifiant)
