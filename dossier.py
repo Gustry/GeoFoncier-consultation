@@ -6,6 +6,7 @@ Created on 11 nov. 2013
 '''
 import StringIO, csv, re
 import xml.etree.ElementTree as ET
+#from xml.etree.ElementTree import tostring
 from exception import ErreurDossier, ErreurAPI
 from document import Document
 
@@ -64,7 +65,13 @@ class Dossier:
         return self.document
     
     def getGeometrie(self):
-        return self.geometrie_kml
+        if self.geometrie_kml != None:
+            kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Placemark>'
+            kml = kml + self.geometrie_kml
+            kml = kml + '</Placemark></Document></kml>'
+            return kml
+        else:
+            return None
     
     def loadDetails(self,data):
         tree = ET.parse(StringIO.StringIO(data))
@@ -75,7 +82,10 @@ class Dossier:
                 raise ErreurDossier, "Erreur dossier"
             
             if child.tag == "geometrie_kml":
-                self.geometrie_kml = "dossier en memoire"
+                geometrie = ET.tostring(child)
+                geometrie = geometrie.replace("<geometrie_kml>", '')
+                geometrie = geometrie.replace("</geometrie_kml>", '')
+                self.geometrie_kml = geometrie
                 
             if child.tag == "document":
                 if child[0].tag == "description" and child[1].tag == "fichier":

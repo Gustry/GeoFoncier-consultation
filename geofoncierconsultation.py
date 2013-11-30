@@ -31,8 +31,10 @@ from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
 from exception import *
 
+from osgeo import ogr
+
 import os.path
-from fileinput import close
+from fileinput import close, filename
 
 
 class GeoFoncierConsultationDetails:
@@ -245,7 +247,90 @@ class GeoFoncierConsultationDetails:
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
-        self.informationWindow(u"Bientôt disponible, en cours de dév")
+        global dossier
+        import tempfile
+        kml = dossier.getGeometrie()
+        
+        tf = tempfile.NamedTemporaryFile(delete=False,suffix=".kml")
+        tf.write(kml)
+        namefile = tf.name
+        tf.flush()
+        tf.close()
+        
+        print namefile
+        
+        driver = ogr.GetDriverByName("kml")
+        print driver
+        
+        dataset = ogr.Open(namefile)
+        print dataset
+        
+        datasource = driver.Open(str(namefile))
+        print datasource
+        if datasource == None:
+            self.errorWindow("Erreur de lecture des géométries")
+        
+        layer = datasource.GetLayer()
+        #print datasource.GetLayerCount()
+        nbFeat = layer.GetFeatureCount()
+        #print nbFeat
+        
+        vl = QgsVectorLayer("Point", "Dossier "+dossier.getReference(), "memory")
+        vPoly = QgsVectorLayer("Polygon", "Dossier "+dossier.getReference(), "memory")
+        
+        pr = vl.dataProvider()
+        prPoly = vPoly.dataProvider()
+        
+        # Enter editing mode
+        vl.startEditing()
+        vPoly.startEditing()
+        
+        
+        row = layer.GetNextFeature()
+        
+        while row:
+            geom = row.GetGeometryRef()
+            print geom.GetGeometryType()
+            if geom.GetGeometryType() == 7 or geom.GetGeometryType() == 4:
+                for i in range(0, geom.GetGeometryCount()):
+                    g = geom.GetGeometryRef(i)
+                    print "%i). %s" %(i, g.ExportToWkt())
+                    print g.GetGeometryType()
+                    
+                    if g.GetGeometryType() == 1:
+                        fet = QgsFeature()
+                        fet.setGeometry(QgsGeometry.fromWkt(g.ExportToWkt()))
+                        pr.addFeatures( [ fet ] )
+                        
+                    if g.GetGeometryType() == 7:
+                        print "sous geom"
+                        print g.GetGeometryCount()
+                        for m in range(0, g.GetGeometryCount()):
+                            n = g.GetGeometryRef(m)
+                            
+                            if g.GetGeometryType() == 1:
+                                fet = QgsFeature()
+                                fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
+                                pr.addFeatures( [ fet ] )
+                                
+                            if g.GetGeometryType() == 3:
+                                fet = QgsFeature()
+                                fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
+                                prPoly.addFeatures( [ fet ] )
+                        print "fin sous geom"
+            
+            row = layer.GetNextFeature()
+
+        
+        # Commit changes
+        vl.commitChanges()
+        vPoly.commitChanges()
+        vl.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        if vl.featureCount() > 0 :
+            QgsMapLayerRegistry.instance().addMapLayer(vl)
+        vPoly.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        #if vPoly.featureCount() > 0 :
+        QgsMapLayerRegistry.instance().addMapLayer(vPoly)
 
     def getExternalDocument(self):
         global connexionAPI
