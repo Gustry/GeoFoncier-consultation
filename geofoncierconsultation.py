@@ -49,6 +49,8 @@ class GeoFoncierConsultationDetails:
         self.canvas = self.iface.mapCanvas()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+        self.resources_dir = os.path.join(self.plugin_dir, "resources")
+        
         # initialize locale
         locale = QSettings().value("locale/userLocale")[0:2]
         localePath = os.path.join(self.plugin_dir, 'i18n', 'geofoncierconsultation_{}.qm'.format(locale))
@@ -66,7 +68,7 @@ class GeoFoncierConsultationDetails:
     def initGui(self):
         # Create action that will start plugin configuration
         self.action = QAction(
-            QIcon(":/plugins/GeoFoncierConsultation/icon.png"),
+            QIcon(":/resources/icon_png"),
             u"GéoFoncier", self.iface.mainWindow())
         # connect the action to the run method
         self.action.triggered.connect(self.run)
@@ -279,8 +281,14 @@ class GeoFoncierConsultationDetails:
         vl = QgsVectorLayer("Point", "Dossier "+dossier.getReference(), "memory")
         vPoly = QgsVectorLayer("Polygon", "Dossier "+dossier.getReference(), "memory")
         
+        table_attributaire = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
+        
         pr = vl.dataProvider()
+        pr.addAttributes(table_attributaire)
+        
+        
         prPoly = vPoly.dataProvider()
+        prPoly.addAttributes(table_attributaire)
         
         # Enter editing mode
         vl.startEditing()
@@ -288,6 +296,8 @@ class GeoFoncierConsultationDetails:
         
         
         row = layer.GetNextFeature()
+        
+        tab = dossier.getInformations()
         
         while row:
             geom = row.GetGeometryRef()
@@ -301,6 +311,8 @@ class GeoFoncierConsultationDetails:
                     if g.GetGeometryType() == 1:
                         fet = QgsFeature()
                         fet.setGeometry(QgsGeometry.fromWkt(g.ExportToWkt()))
+                        
+                        fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
                         pr.addFeatures( [ fet ] )
                         
                     if g.GetGeometryType() == 7:
@@ -312,11 +324,13 @@ class GeoFoncierConsultationDetails:
                             if n.GetGeometryType() == 1:
                                 fet = QgsFeature()
                                 fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
+                                fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
                                 pr.addFeatures( [ fet ] )
                                 
                             if n.GetGeometryType() == 3:
                                 fet = QgsFeature()
                                 fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
+                                fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
                                 prPoly.addFeatures( [ fet ] )
                         print "fin sous geom"
             
@@ -327,12 +341,16 @@ class GeoFoncierConsultationDetails:
         vl.commitChanges()
         vPoly.commitChanges()
         vl.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
-        if vl.featureCount() > 0 :
-            QgsMapLayerRegistry.instance().addMapLayer(vl)
         vPoly.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        
         if vPoly.featureCount() > 0 :
+            print vPoly.loadSldStyle(":/resources/polygons")
             QgsMapLayerRegistry.instance().addMapLayer(vPoly)
         
+        if vl.featureCount() > 0 :
+            print vl.loadSldStyle(":/resources/point")
+            QgsMapLayerRegistry.instance().addMapLayer(vl)
+            
         self.canvas.zoomToFullExtent()
         
 
@@ -344,8 +362,7 @@ class GeoFoncierConsultationDetails:
         
     def ajouterCoucheOSM(self):
         self.enableUseOfGlobalCrs()
-        tilesDir = os.path.join(self.plugin_dir, "tiles")
-        fileInfo = QFileInfo(os.path.join(tilesDir,"osmfr.xml"))
+        fileInfo = QFileInfo(os.path.join(self.resources_dir,"osmfr.xml"))
         rlayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
         
         if not rlayer.isValid():
