@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GéoFoncier : consultation de dossiers</string>
+   <string>Mes dossiers GéoFoncier</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">

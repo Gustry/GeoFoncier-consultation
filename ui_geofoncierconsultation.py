@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Tue Dec  3 14:22:10 2013
+# Created: Tue Dec  3 15:59:31 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -164,7 +164,7 @@ class Ui_GeoFoncierConsultation(object):
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
-        GeoFoncierConsultation.setWindowTitle(_translate("GeoFoncierConsultation", "GéoFoncier : consultation de dossiers", None))
+        GeoFoncierConsultation.setWindowTitle(_translate("GeoFoncierConsultation", "Mes dossiers GéoFoncier", None))
         self.label_login.setText(_translate("GeoFoncierConsultation", "Client", None))
         self.lineEdit_login.setText(_translate("GeoFoncierConsultation", "clientge", None))
         self.label_password.setText(_translate("GeoFoncierConsultation", "Mot de passe", None))

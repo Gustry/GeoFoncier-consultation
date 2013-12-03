@@ -97,7 +97,7 @@ class GeoFoncierConsultationDetails:
         self.iface.removeToolBarIcon(self.action)
           
     def aboutWindow(self):
-        infoString = QCoreApplication.translate('GéoFoncier', u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong>")
+        infoString = QCoreApplication.translate('GéoFoncier', u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : A DEFINIR")
         QMessageBox.information(self.dlg,u"GéoFoncier", infoString)
         
     def errorWindow(self,message):

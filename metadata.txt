@@ -12,7 +12,7 @@
 name=Mes dossiers GéoFoncier
 qgisMinimumVersion=2.0
 description=Plugin  de diffusion des dossiers aux clients GéoFoncier
-version=0.1
+version=0.4-alpha
 author=Etienne Trimaille
 email=etienne@trimaille.eu
 
@@ -24,12 +24,12 @@ email=etienne@trimaille.eu
 # changelog=
 
 # tags are comma separated with spaces allowed
-tags=géofoncier,api
+tags=géofoncier,api,oge
 
 homepage=
 tracker=https://github.com/Gustry/GeoFoncier-consultation/issues
 repository=https://github.com/Gustry/GeoFoncier-consultation
-icon=icon.png
+icon=resources/icon.png
 # experimental flag
 experimental=True
 
