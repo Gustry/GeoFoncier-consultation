@@ -30,7 +30,7 @@ from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
 from exception import *
-
+from KML import *
 from osgeo import ogr
 
 import os.path
@@ -42,6 +42,8 @@ class GeoFoncierConsultationDetails:
     dossier = None
     connexionAPI = None
     listeDossierCSV = None
+    PointLayer = None
+    PolygonLayer = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -81,7 +83,8 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
-        QObject.connect(self.dlg.ui.pushButton_voirCouche, SIGNAL("clicked()"), self.voirCoucheQGIS)
+        QObject.connect(self.dlg.ui.pushButton_telecharger_kml, SIGNAL("clicked()"), self.telechargerKML)
+        QObject.connect(self.dlg.ui.pushButton_zoom_kml, SIGNAL("clicked()"), self.zoomKML)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
         
@@ -119,7 +122,7 @@ class GeoFoncierConsultationDetails:
         msgBox.open()
         QApplication.processEvents()
         
-        global connexionAPI, listeDossierCSV
+        global connexionAPI, listeDossierCSV, PointLayer, PolygonLayer
         
         self.dlg.ui.label_login.setDisabled(True)
         self.dlg.ui.label_password.setDisabled(True)
@@ -187,6 +190,16 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.pushButton_enregistrer_dossiers.show()
             self.dlg.ui.pushButton_couche_osm.show()
             
+            
+            #Création des couches QGIS
+            '''
+            PointLayer = QgsVectorLayer("Point", "Dossier", "memory")
+            PolygonLayer = QgsVectorLayer("Polygon", "Dossier ", "memory")
+            table_attributaire = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
+        
+            pr = vl.dataProvider()
+            pr.addAttributes(table_attributaire)
+            '''
             msgBox.close()
             self.dlg.setCursor(Qt.ArrowCursor)
 
@@ -225,6 +238,8 @@ class GeoFoncierConsultationDetails:
             QApplication.processEvents()
     
             dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
+            
+            self.voirCoucheQGIS()
             msgBox.close()
         
         self.dlg.ui.label_reference.setText(self.dlg.trUtf8(dossier.reference))
@@ -247,94 +262,39 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
         self.dlg.ui.tabWidget.setCurrentIndex(1)
+        
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
         global dossier
-        import tempfile
-        kml = dossier.getGeometrie()
-        
-        tf = tempfile.NamedTemporaryFile(delete=False,suffix=".kml")
-        tf.write(kml)
-        namefile = tf.name
-        tf.flush()
-        tf.close()
-        
-        print namefile
-        
-        driver = ogr.GetDriverByName("kml")
-        print driver
-        
-        dataset = ogr.Open(namefile)
-        print dataset
-        
-        datasource = driver.Open(str(namefile))
-        print datasource
-        if datasource == None:
-            self.errorWindow("Erreur de lecture des géométries")
-        
-        layer = datasource.GetLayer()
-        #print datasource.GetLayerCount()
-        nbFeat = layer.GetFeatureCount()
-        #print nbFeat
         
         vl = QgsVectorLayer("Point", "Dossier "+dossier.getReference(), "memory")
         vPoly = QgsVectorLayer("Polygon", "Dossier "+dossier.getReference(), "memory")
-        
         table_attributaire = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
-        
         pr = vl.dataProvider()
         pr.addAttributes(table_attributaire)
-        
-        
         prPoly = vPoly.dataProvider()
         prPoly.addAttributes(table_attributaire)
-        
-        # Enter editing mode
         vl.startEditing()
-        vPoly.startEditing()
+        vPoly.startEditing()        
         
-        
-        row = layer.GetNextFeature()
-        
+        kmlString = dossier.getGeometrie()
         tab = dossier.getInformations()
-        
-        while row:
-            geom = row.GetGeometryRef()
-            print geom.GetGeometryType()
-            if geom.GetGeometryType() == 7 or geom.GetGeometryType() == 4:
-                for i in range(0, geom.GetGeometryCount()):
-                    g = geom.GetGeometryRef(i)
-                    print "%i). %s" %(i, g.ExportToWkt())
-                    print g.GetGeometryType()
-                    
-                    if g.GetGeometryType() == 1:
-                        fet = QgsFeature()
-                        fet.setGeometry(QgsGeometry.fromWkt(g.ExportToWkt()))
-                        
-                        fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
-                        pr.addFeatures( [ fet ] )
-                        
-                    if g.GetGeometryType() == 7:
-                        print "sous geom"
-                        print g.GetGeometryCount()
-                        for m in range(0, g.GetGeometryCount()):
-                            n = g.GetGeometryRef(m)
-                            
-                            if n.GetGeometryType() == 1:
-                                fet = QgsFeature()
-                                fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
-                                fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
-                                pr.addFeatures( [ fet ] )
-                                
-                            if n.GetGeometryType() == 3:
-                                fet = QgsFeature()
-                                fet.setGeometry(QgsGeometry.fromWkt(n.ExportToWkt()))
-                                fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
-                                prPoly.addFeatures( [ fet ] )
-                        print "fin sous geom"
+        kml = KML(kmlString)
+        geometries = kml.getGeometries()
+        for geom in geometries:
+            fet = QgsFeature()
+            qgisGeom = QgsGeometry.fromWkt(geom)
+            fet.setGeometry(qgisGeom)
+            fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
             
-            row = layer.GetNextFeature()
+            qgisGeomType = qgisGeom.wkbType()
+            if qgisGeomType == 1:
+                pr.addFeatures( [ fet ] )
+                
+            if qgisGeomType == 3:
+                prPoly.addFeatures( [ fet ] )
+       
 
         
         # Commit changes
@@ -344,15 +304,27 @@ class GeoFoncierConsultationDetails:
         vPoly.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
         
         if vPoly.featureCount() > 0 :
-            print vPoly.loadSldStyle(":/resources/polygons")
+            vPoly.loadSldStyle(":/resources/polygons")
             QgsMapLayerRegistry.instance().addMapLayer(vPoly)
+            vPoly.selectAll()
+            self.canvas.zoomToSelected(vPoly)
+            vPoly.invertSelection()
         
         if vl.featureCount() > 0 :
-            print vl.loadSldStyle(":/resources/point")
+            vl.loadSldStyle(":/resources/point")
             QgsMapLayerRegistry.instance().addMapLayer(vl)
-            
-        self.canvas.zoomToFullExtent()
+            vl.selectAll()
+            self.canvas.zoomToSelected(vl)
+            vl.invertSelection()
         
+        if self.canvas.scale() < 2405 :
+            self.canvas.zoomScale(2407)
+    
+    def telechargerKML(self):
+        self.informationWindow(u"Bientôt disponible, en cours de dev")
+        
+    def zoomKML(self):
+        self.informationWindow(u"Bientôt disponible, en cours de dev")
 
     def getExternalDocument(self):
         global connexionAPI

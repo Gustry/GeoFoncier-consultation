@@ -131,7 +131,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -272,7 +272,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>40</y>
+       <y>20</y>
        <width>131</width>
        <height>16</height>
       </rect>
@@ -292,9 +292,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>80</y>
-       <width>261</width>
-       <height>137</height>
+       <y>50</y>
+       <width>211</width>
+       <height>201</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -331,31 +331,38 @@
       </item>
      </layout>
     </widget>
-    <widget class="QPushButton" name="pushButton_ZIP">
+    <widget class="QWidget" name="verticalLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>240</y>
-       <width>93</width>
-       <height>24</height>
+       <x>250</x>
+       <y>170</y>
+       <width>160</width>
+       <height>82</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Archive ZIP</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_voirCouche">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>210</y>
-       <width>93</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Carte</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QPushButton" name="pushButton_zoom_kml">
+        <property name="text">
+         <string>Zoom</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_telecharger_kml">
+        <property name="text">
+         <string>Télécharger KML</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_ZIP">
+        <property name="text">
+         <string>Archive ZIP</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>

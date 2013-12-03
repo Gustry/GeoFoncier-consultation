@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Sat Nov 30 17:18:44 2013
+# Created: Tue Dec  3 14:22:10 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -116,7 +116,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label.setGeometry(QtCore.QRect(420, 10, 201, 16))
         self.label.setObjectName(_fromUtf8("label"))
         self.label_reference = QtGui.QLabel(self.tab_2)
-        self.label_reference.setGeometry(QtCore.QRect(20, 40, 131, 16))
+        self.label_reference.setGeometry(QtCore.QRect(20, 20, 131, 16))
         font = QtGui.QFont()
         font.setBold(True)
         font.setUnderline(True)
@@ -124,7 +124,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_reference.setFont(font)
         self.label_reference.setObjectName(_fromUtf8("label_reference"))
         self.layoutWidget1 = QtGui.QWidget(self.tab_2)
-        self.layoutWidget1.setGeometry(QtCore.QRect(20, 80, 261, 137))
+        self.layoutWidget1.setGeometry(QtCore.QRect(20, 50, 211, 201))
         self.layoutWidget1.setObjectName(_fromUtf8("layoutWidget1"))
         self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget1)
         self.verticalLayout.setSpacing(25)
@@ -142,16 +142,25 @@ class Ui_GeoFoncierConsultation(object):
         self.label_date = QtGui.QLabel(self.layoutWidget1)
         self.label_date.setObjectName(_fromUtf8("label_date"))
         self.verticalLayout.addWidget(self.label_date)
-        self.pushButton_ZIP = QtGui.QPushButton(self.tab_2)
-        self.pushButton_ZIP.setGeometry(QtCore.QRect(320, 240, 93, 24))
+        self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(250, 170, 160, 82))
+        self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout_2.setMargin(0)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.pushButton_zoom_kml = QtGui.QPushButton(self.verticalLayoutWidget)
+        self.pushButton_zoom_kml.setObjectName(_fromUtf8("pushButton_zoom_kml"))
+        self.verticalLayout_2.addWidget(self.pushButton_zoom_kml)
+        self.pushButton_telecharger_kml = QtGui.QPushButton(self.verticalLayoutWidget)
+        self.pushButton_telecharger_kml.setObjectName(_fromUtf8("pushButton_telecharger_kml"))
+        self.verticalLayout_2.addWidget(self.pushButton_telecharger_kml)
+        self.pushButton_ZIP = QtGui.QPushButton(self.verticalLayoutWidget)
         self.pushButton_ZIP.setObjectName(_fromUtf8("pushButton_ZIP"))
-        self.pushButton_voirCouche = QtGui.QPushButton(self.tab_2)
-        self.pushButton_voirCouche.setGeometry(QtCore.QRect(320, 210, 93, 24))
-        self.pushButton_voirCouche.setObjectName(_fromUtf8("pushButton_voirCouche"))
+        self.verticalLayout_2.addWidget(self.pushButton_ZIP)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -182,7 +191,8 @@ class Ui_GeoFoncierConsultation(object):
         self.label_commune.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.label_insee.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.label_date.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
+        self.pushButton_zoom_kml.setText(_translate("GeoFoncierConsultation", "Zoom", None))
+        self.pushButton_telecharger_kml.setText(_translate("GeoFoncierConsultation", "Télécharger KML", None))
         self.pushButton_ZIP.setText(_translate("GeoFoncierConsultation", "Archive ZIP", None))
-        self.pushButton_voirCouche.setText(_translate("GeoFoncierConsultation", "Carte", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("GeoFoncierConsultation", "Tab 2", None))
 
