@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/resources" >
         <file alias="icon_png">resources/icon.png</file>
-	<file alias="icon_svg">resources/icon.svg</file>
 	<file alias="osmfr">resources/osmfr.xml</file>
 	<file alias="point">resources/point.sld</file>
 	<file alias="polygons">resources/polygons.sld</file>

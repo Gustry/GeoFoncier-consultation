@@ -10,10 +10,14 @@
           <se:PointSymbolizer>
             <se:Graphic>
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="http://dev.trimaille.eu/icon.svg"/>
+                <se:OnlineResource xlink:type="simple" xlink:href="http://www.geofoncier.fr/b.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
-              <se:Size>5</se:Size>
+              <se:Size>25</se:Size>
+              <se:Displacement>
+                <se:DisplacementX>9</se:DisplacementX>
+                <se:DisplacementY>15</se:DisplacementY>
+              </se:Displacement>
             </se:Graphic>
           </se:PointSymbolizer>
         </se:Rule>
