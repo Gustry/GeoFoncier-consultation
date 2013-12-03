@@ -386,6 +386,8 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.comboBox_format.hide()
         self.dlg.ui.pushButton_enregistrer_dossiers.hide()
         self.dlg.ui.pushButton_couche_osm.hide()
+        self.dlg.ui.pushButton_telecharger_kml.hide()
+        self.dlg.ui.pushButton_zoom_kml.hide()
         del Dossier.listeDossiers[:]
         self.dlg.show()
 
