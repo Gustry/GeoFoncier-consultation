@@ -42,7 +42,7 @@ class KML:
         if geom.GetGeometryType() != 1 and geom.GetGeometryType() != 2 and geom.GetGeometryType() != 3 :
             self.explodeMultiGeometry(geom)
         else:
-            self.geometries.append(geom.exportToWkt())
+            self.geometries.append(geom.ExportToWkt())
 
         return self.geometries
     
