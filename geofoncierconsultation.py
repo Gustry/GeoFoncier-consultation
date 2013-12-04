@@ -169,13 +169,13 @@ class GeoFoncierConsultationDetails:
             self.buttonGroupArchive = QButtonGroup()
             self.buttonGroupArchive.buttonClicked[int].connect(self.getArchive)
             
-            for row,dossier in enumerate(Dossier.listeDossiers):
+            for row,dossier in enumerate(Dossier.getListeDossiers()):
                 element = dossier.getInformations()
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 0, QTableWidgetItem(self.dlg.trUtf8(element[0])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 1, QTableWidgetItem(self.dlg.trUtf8(element[1])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 2, QTableWidgetItem(self.dlg.trUtf8(element[2])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 3, QTableWidgetItem(self.dlg.trUtf8(element[3])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 4, QTableWidgetItem(self.dlg.trUtf8(element[4])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 0, QTableWidgetItem(self.dlg.trUtf8(element["structure"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 1, QTableWidgetItem(self.dlg.trUtf8(element["reference"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 2, QTableWidgetItem(self.dlg.trUtf8(element["nom_commune"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 3, QTableWidgetItem(self.dlg.trUtf8(element["insee_commune"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 4, QTableWidgetItem(self.dlg.trUtf8(element["date"])))
                 
                 button = QPushButton("Archive")
                 self.buttonGroupArchive.addButton(button, row)
@@ -227,7 +227,7 @@ class GeoFoncierConsultationDetails:
         row = self.dlg.ui.tableWidget_dossiers.currentItem().row()
         dossier = Dossier.getDossier(row)
         
-        if dossier.getGeometrie() == None:
+        if dossier.getGeometries() == None:
             self.dlg.setCursor(Qt.WaitCursor)
             msgBox = QProgressDialog("Chargement","Annuler",0,0)
             msgBox.setValue(-1)
@@ -242,11 +242,12 @@ class GeoFoncierConsultationDetails:
             self.voirCoucheQGIS()
             msgBox.close()
         
-        self.dlg.ui.label_reference.setText(self.dlg.trUtf8(dossier.reference))
-        self.dlg.ui.label_structure.setText(self.dlg.trUtf8(dossier.structure_ge))
-        self.dlg.ui.label_commune.setText(self.dlg.trUtf8(dossier.nom_commune))
-        self.dlg.ui.label_date.setText(self.dlg.trUtf8(dossier.date))
-        self.dlg.ui.label_insee.setText(self.dlg.trUtf8(dossier.insee_commune))
+        tab = dossier.getInformations()
+        self.dlg.ui.label_reference.setText(self.dlg.trUtf8(tab["reference"]))
+        self.dlg.ui.label_structure.setText(self.dlg.trUtf8(tab["structure"]))
+        self.dlg.ui.label_commune.setText(self.dlg.trUtf8(tab["nom_commune"]))
+        self.dlg.ui.label_date.setText(self.dlg.trUtf8(tab["date"]))
+        self.dlg.ui.label_insee.setText(self.dlg.trUtf8(tab["insee_commune"]))
         QApplication.processEvents()
         for i,doc in enumerate(dossier.getDocuments()):
             item = QListWidgetItem()
@@ -278,15 +279,13 @@ class GeoFoncierConsultationDetails:
         vl.startEditing()
         vPoly.startEditing()        
         
-        kmlString = dossier.getGeometrie()
         tab = dossier.getInformations()
-        kml = KML(kmlString)
-        geometries = kml.getGeometries()
+        geometries = dossier.getGeometries()
         for geom in geometries:
             fet = QgsFeature()
             qgisGeom = QgsGeometry.fromWkt(geom)
             fet.setGeometry(qgisGeom)
-            fet.setAttributes( [(tab[1]),(tab[0]),(tab[2]),(tab[3]),(tab[4])])
+            fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"])])
             
             qgisGeomType = qgisGeom.wkbType()
             if qgisGeomType == 1:
@@ -296,7 +295,6 @@ class GeoFoncierConsultationDetails:
                 prPoly.addFeatures( [ fet ] )
        
 
-        
         # Commit changes
         vl.commitChanges()
         vPoly.commitChanges()
@@ -388,7 +386,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.pushButton_couche_osm.hide()
         self.dlg.ui.pushButton_telecharger_kml.hide()
         self.dlg.ui.pushButton_zoom_kml.hide()
-        del Dossier.listeDossiers[:]
+        Dossier.truncateDossier()
         self.dlg.show()
 
     def saveZone(self, zone):

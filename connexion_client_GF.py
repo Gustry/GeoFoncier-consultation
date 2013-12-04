@@ -6,62 +6,58 @@ Created on 11 nov. 2013
 '''
 
 import urllib2, base64
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 from Saver import Saver
 from exception import LoginException, NoResult
-from PyQt4 import QtNetwork
 
 class ConnexionClientGF:
+    """Classe client GéoFoncier"""
 
     def __init__(self, login, password, zone):
         
-        zonesDisponibles = ("metropole", "antilles", "guyane", "reunion", "mayotte")
-        if zone not in zonesDisponibles:
-            raise Exception, "Zone non disponible" 
-        self.login = login
-        self.password = password
-        self.authentification = self.createLogin(login, password)
-        self.qauthentification = QtNetwork.QAuthenticator()
-        self.qauthentification.setUser(login)
-        self.qauthentification.setPassword(password)
-        self.zone = zone
-        self.url = self.getURLAPI(login, password)
+        if zone not in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
+            raise Exception, "Zone non disponible"
+        
+        self.__login = login
+        self.__password = password
+        self.__authentification = self.__createLogin(login, password)
+        self.__zone = zone
+        self.__url = self.__getURLAPI(login, password)
     
-    def getURLAPI(self,login, password):
+    '''
+    Private
+    '''
+    
+    def __getURLAPI(self,login, password):
+        """A private function to get baz.
+
+        This really should have a full function definition, but I am too lazy.
+
+        """
         if login == "clientge" and password == "clientge":
             return "https://api-geofoncier.brgm-rec.fr/clientsge/"
         else:
             return "https://api.geofoncier.fr/clientsge/"
             
-    def createLogin(self,login,password):
+    def __createLogin(self,login,password):
         base64string = base64.encodestring('%s:%s' % (login, password))
         return "Basic %s" % base64string
-
-    def getQAuthenticator(self):
-        return self.qauthentification
     
+    '''
+    Public
+    '''
     def getAndSaveExternalDocument(self,ui,component,nameFile):
-        Saver(self.login,self.password,self.url+component,nameFile,ui)
-
-    def getExternalLink(self,component):
-        desktopService = QDesktopServices()
-        desktopService.openUrl(QUrl(self.url+component))
-    
-    def getExternalURL(self,component):
-        return self.url+component
+        Saver(self.__login,self.__password,self.__url+component,nameFile,ui)
 
     def get(self, composante):
-        url = self.url+composante
+        url = self.__url+composante
         req = urllib2.Request(url)
-        authheader = self.authentification
+        authheader = self.__authentification
 
         req.add_header("Authorization", authheader)
         req.add_header = ('User-agent', 'QGIS_plugin_consultation')
 
         try:
             res = urllib2.urlopen(req)
-            #headers = res.info().headers
             data = res.read()
             return data
         except urllib2.HTTPError as e:
@@ -73,13 +69,13 @@ class ConnexionClientGF:
         except IOError, e:
             raise e
             
-    def getURLListeDossiers(self,format):
-        if format == "csv":
-            return "dossiers?output=csv&zone="+self.zone
-        elif format == "kml":
-            return "dossiers?output=kml&zone="+self.zone
+    def getURLListeDossiers(self,formatOutput):
+        if formatOutput == "csv":
+            return "dossiers?output=csv&zone="+self.__zone
+        elif formatOutput == "kml":
+            return "dossiers?output=kml&zone="+self.__zone
         else:
-            return "dossiers?zone="+self.zone
+            return "dossiers?zone="+self.__zone
         
-    def getListeDossiers(self,format="csv"):
-        return self.get(self.getURLListeDossiers(format))
+    def getListeDossiers(self,formatOutput="csv"):
+        return self.get(self.getURLListeDossiers(formatOutput))

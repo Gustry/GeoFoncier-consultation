@@ -9,15 +9,15 @@ Created on 28 nov. 2013
 class Document:
     
     def __init__(self,identifiant, description, extension):
-        self.identifiant = identifiant
-        self.description = description
-        self.extension = extension
+        self.__identifiant = identifiant
+        self.__description = description
+        self.__extension = extension
         
     def getDescription(self):
-        return self.description
+        return self.__description
     
     def getFileName(self):
-        return self.identifiant+"."+self.extension
+        return self.__identifiant+"."+self.__extension
     
     def getURL(self):
-        return("documents/fichier/"+self.identifiant)
+        return("documents/fichier/"+self.__identifiant)

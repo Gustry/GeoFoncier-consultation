@@ -11,15 +11,20 @@ import tempfile
 class KML:
     
     def __init__(self,kml):
-        self.kml = kml
-        self.geometries = list()
-        
+        self.__kml = kml
+        self.__geometries = list()
+
+    def getFullKML(self):
+        kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Placemark>'
+        kml = kml + self.__kml
+        kml = kml + '</Placemark></Document></kml>'
+        return kml       
     
     def getGeometries(self):
         
         #Création d'un fichier temporaire
         tf = tempfile.NamedTemporaryFile(delete=False,suffix=".kml")
-        tf.write(self.kml)
+        tf.write(self.getFullKML())
         namefile = tf.name
         tf.flush()
         tf.close()
@@ -39,19 +44,18 @@ class KML:
         geom = row.GetGeometryRef()
         
         #Test d'une multigeom
-        if geom.GetGeometryType() != 1 and geom.GetGeometryType() != 2 and geom.GetGeometryType() != 3 :
-            self.explodeMultiGeometry(geom)
+        if geom.GetGeometryType() != ogr.wkbPoint and geom.GetGeometryType() != ogr.wkbPolygon and geom.GetGeometryType() != ogr.wkbMultiPoint and geom.GetGeometryType() != ogr.wkbMultiPolygon:
+            self.__explodeMultiGeometry(geom)
         else:
-            self.geometries.append(geom.ExportToWkt())
+            self.__geometries.append(geom.ExportToWkt())
 
-        return self.geometries
+        return self.__geometries
     
-    def explodeMultiGeometry(self,multigeom) :
+    def __explodeMultiGeometry(self,multigeom) :
         #explosion de la multigeom
         for i in range(0, multigeom.GetGeometryCount()):
             geom = multigeom.GetGeometryRef(i)
-            if geom.GetGeometryType() == 1 or geom.GetGeometryType() == 2 or geom.GetGeometryType() == 3 :
-                #print geom.__class__.__name__
-                self.geometries.append(geom.ExportToWkt())
+            if geom.GetGeometryType() == ogr.wkbPoint or geom.GetGeometryType() == ogr.wkbMultiPoint or geom.GetGeometryType() == ogr.wkbPolygon or geom.GetGeometryType() == ogr.wkbMultiPolygon:
+                self.__geometries.append(geom.ExportToWkt())
             else:
-                self.explodeMultiGeometry(geom)
+                self.__explodeMultiGeometry(geom)
