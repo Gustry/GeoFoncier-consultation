@@ -76,6 +76,12 @@ class Dossier:
         else:
             return self.__geometrie_kml.getGeometries()
 
+    def getBoundary(self):
+        if self.__geometrie_kml == None:
+            return None
+        else:
+            return self.__geometrie_kml.getBoundary()
+    
     def getDocument(self,numDocument):
         return self.__document[numDocument]
     

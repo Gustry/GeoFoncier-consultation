@@ -39,11 +39,11 @@ from fileinput import close, filename
 
 class GeoFoncierConsultationDetails:
     
-    dossier = None
-    connexionAPI = None
-    listeDossierCSV = None
-    PointLayer = None
-    PolygonLayer = None
+    #dossier = None
+    #connexionAPI = None
+    #listeDossierCSV = None
+    #PointLayer = None
+    #PolygonLayer = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -122,7 +122,7 @@ class GeoFoncierConsultationDetails:
         msgBox.open()
         QApplication.processEvents()
         
-        global connexionAPI, listeDossierCSV, PointLayer, PolygonLayer
+        #global connexionAPI, listeDossierCSV, PointLayer, PolygonLayer
         
         self.dlg.ui.label_login.setDisabled(True)
         self.dlg.ui.label_password.setDisabled(True)
@@ -139,10 +139,10 @@ class GeoFoncierConsultationDetails:
         
         self.saveZone(zone)
         
-        connexionAPI = ConnexionClientGF(login, password, zone)
+        self.connexionAPI = ConnexionClientGF(login, password, zone)
         listeDossierCSV = ''
         try:
-            listeDossierCSV = connexionAPI.getListeDossiers()
+            listeDossierCSV = self.connexionAPI.getListeDossiers()
         except LoginException, e:
             self.errorWindow(u"Mauvais nom d'utilisateur ou mot de passe")
             self.run()
@@ -192,42 +192,47 @@ class GeoFoncierConsultationDetails:
             
             
             #Création des couches QGIS
-            '''
-            PointLayer = QgsVectorLayer("Point", "Dossier", "memory")
-            PolygonLayer = QgsVectorLayer("Polygon", "Dossier ", "memory")
+            
+            self.PointLayerDossier = QgsVectorLayer("Point", "Dossier", "memory")
+            self.PolygonLayerDossier = QgsVectorLayer("Polygon", "Dossier ", "memory")
+            
             table_attributaire = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
-        
-            pr = vl.dataProvider()
-            pr.addAttributes(table_attributaire)
-            '''
+            
+            self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
+            self.dataProviderPointDossier.addAttributes(table_attributaire)
+            self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
+            self.dataProviderPolygonDossier.addAttributes(table_attributaire)
+            
+            self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+            self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+            
+            self.PointLayerDossier.loadSldStyle(":/resources/point")
+            QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
+            self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
+            QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
+            
             msgBox.close()
             self.dlg.setCursor(Qt.ArrowCursor)
 
     def enregistrerZIP(self):
-        global connexionAPI,dossier
-        print dossier.getReference()
-        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossier_"+dossier.getReference()+".zip")
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),"dossier_"+self.dossier.getReference()+".zip")
         
     def getArchive(self,row):
-        global connexionAPI
-        dossier = Dossier.getDossier(row)
-        connexionAPI.getAndSaveExternalDocument(self.dlg,dossier.getURLArchiveZIP(),"dossier_"+dossier.getReference()+".zip")
+        self.dossier = Dossier.getDossier(row)
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),"dossier_"+self.dossier.getReference()+".zip")
 
     def enregistrerDossiers(self):
-        format = self.dlg.ui.comboBox_format.currentText()
-        global connexionAPI
-        if format in ('csv', 'kml', 'xml'):
-            filename = "mes_dossiers."+format
-            connexionAPI.getAndSaveExternalDocument(self.dlg,connexionAPI.getURLListeDossiers(format),filename)
+        formatOutput = self.dlg.ui.comboBox_format.currentText()
+        if formatOutput in ('csv', 'kml', 'xml'):
+            filename = "mes_dossiers."+formatOutput
+            self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.connexionAPI.getURLListeDossiers(formatOutput),filename)
         
     def getDetails(self):
-        global connexionAPI
-        global dossier
         self.dlg.ui.listWidget_details.clear()
         row = self.dlg.ui.tableWidget_dossiers.currentItem().row()
-        dossier = Dossier.getDossier(row)
+        self.dossier = Dossier.getDossier(row)
         
-        if dossier.getGeometries() == None:
+        if self.dossier.getGeometries() == None:
             self.dlg.setCursor(Qt.WaitCursor)
             msgBox = QProgressDialog("Chargement","Annuler",0,0)
             msgBox.setValue(-1)
@@ -237,19 +242,19 @@ class GeoFoncierConsultationDetails:
             msgBox.open()
             QApplication.processEvents()
     
-            dossier.loadDetails(connexionAPI.get(dossier.getURLDossier()))
+            self.dossier.loadDetails(self.connexionAPI.get(self.dossier.getURLDossier()))
             
             self.voirCoucheQGIS()
             msgBox.close()
         
-        tab = dossier.getInformations()
+        tab = self.dossier.getInformations()
         self.dlg.ui.label_reference.setText(self.dlg.trUtf8(tab["reference"]))
         self.dlg.ui.label_structure.setText(self.dlg.trUtf8(tab["structure"]))
         self.dlg.ui.label_commune.setText(self.dlg.trUtf8(tab["nom_commune"]))
         self.dlg.ui.label_date.setText(self.dlg.trUtf8(tab["date"]))
         self.dlg.ui.label_insee.setText(self.dlg.trUtf8(tab["insee_commune"]))
         QApplication.processEvents()
-        for i,doc in enumerate(dossier.getDocuments()):
+        for i,doc in enumerate(self.dossier.getDocuments()):
             item = QListWidgetItem()
             description = doc.getDescription()
             item.setText(self.dlg.trUtf8(description));
@@ -267,20 +272,12 @@ class GeoFoncierConsultationDetails:
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
-        global dossier
         
-        vl = QgsVectorLayer("Point", "Dossier "+dossier.getReference(), "memory")
-        vPoly = QgsVectorLayer("Polygon", "Dossier "+dossier.getReference(), "memory")
-        table_attributaire = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
-        pr = vl.dataProvider()
-        pr.addAttributes(table_attributaire)
-        prPoly = vPoly.dataProvider()
-        prPoly.addAttributes(table_attributaire)
-        vl.startEditing()
-        vPoly.startEditing()        
+        self.PointLayerDossier.startEditing()
+        self.PolygonLayerDossier.startEditing()        
         
-        tab = dossier.getInformations()
-        geometries = dossier.getGeometries()
+        tab = self.dossier.getInformations()
+        geometries = self.dossier.getGeometries()
         for geom in geometries:
             fet = QgsFeature()
             qgisGeom = QgsGeometry.fromWkt(geom)
@@ -289,34 +286,14 @@ class GeoFoncierConsultationDetails:
             
             qgisGeomType = qgisGeom.wkbType()
             if qgisGeomType == 1:
-                pr.addFeatures( [ fet ] )
+                self.dataProviderPointDossier.addFeatures( [ fet ] )
                 
             if qgisGeomType == 3:
-                prPoly.addFeatures( [ fet ] )
-       
+                self.dataProviderPolygonDossier.addFeatures( [ fet ] )
+        
+        self.PointLayerDossier.commitChanges()
+        self.PolygonLayerDossier.commitChanges()
 
-        # Commit changes
-        vl.commitChanges()
-        vPoly.commitChanges()
-        vl.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
-        vPoly.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
-        
-        if vPoly.featureCount() > 0 :
-            vPoly.loadSldStyle(":/resources/polygons")
-            QgsMapLayerRegistry.instance().addMapLayer(vPoly)
-            vPoly.selectAll()
-            self.canvas.zoomToSelected(vPoly)
-            vPoly.invertSelection()
-        
-        if vl.featureCount() > 0 :
-            vl.loadSldStyle(":/resources/point")
-            QgsMapLayerRegistry.instance().addMapLayer(vl)
-            vl.selectAll()
-            self.canvas.zoomToSelected(vl)
-            vl.invertSelection()
-        
-        if self.canvas.scale() < 2405 :
-            self.canvas.zoomScale(2407)
     
     def telechargerKML(self):
         self.informationWindow(u"Bientôt disponible, en cours de dev")
@@ -325,10 +302,9 @@ class GeoFoncierConsultationDetails:
         self.informationWindow(u"Bientôt disponible, en cours de dev")
 
     def getExternalDocument(self):
-        global connexionAPI
         row = self.dlg.ui.listWidget_details.currentRow()
-        doc = dossier.getDocument(row)
-        connexionAPI.getAndSaveExternalDocument(self.dlg,doc.getURL(),doc.getFileName())
+        doc = self.dossier.getDocument(row)
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,doc.getURL(),doc.getFileName())
         
     def ajouterCoucheOSM(self):
         self.enableUseOfGlobalCrs()

@@ -13,12 +13,16 @@ class KML:
     def __init__(self,kml):
         self.__kml = kml
         self.__geometries = list()
+        self.__multigeom = None
 
     def getFullKML(self):
         kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Placemark>'
         kml = kml + self.__kml
         kml = kml + '</Placemark></Document></kml>'
-        return kml       
+        return kml
+    
+    def getBoundary(self):
+        return self.__multigeom.Boundary()     
     
     def getGeometries(self):
         
@@ -42,7 +46,7 @@ class KML:
         
         row = layer.GetNextFeature()
         geom = row.GetGeometryRef()
-        
+        self.__multigeom = geom
         #Test d'une multigeom
         if geom.GetGeometryType() != ogr.wkbPoint and geom.GetGeometryType() != ogr.wkbPolygon and geom.GetGeometryType() != ogr.wkbMultiPoint and geom.GetGeometryType() != ogr.wkbMultiPolygon:
             self.__explodeMultiGeometry(geom)
