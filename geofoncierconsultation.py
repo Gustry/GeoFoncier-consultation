@@ -190,18 +190,17 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.pushButton_enregistrer_dossiers.show()
             self.dlg.ui.pushButton_couche_osm.show()
             
-            
             #Création des couches QGIS
+            self.PointLayerDossier = QgsVectorLayer("Point", u"Dossier Géofoncier", "memory")
+            self.PolygonLayerDossier = QgsVectorLayer("Polygon", u"Dossier Géofoncier", "memory")
             
-            self.PointLayerDossier = QgsVectorLayer("Point", "Dossier", "memory")
-            self.PolygonLayerDossier = QgsVectorLayer("Polygon", "Dossier ", "memory")
-            
-            table_attributaire = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
+            table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
+            table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String) ]
             
             self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
-            self.dataProviderPointDossier.addAttributes(table_attributaire)
+            self.dataProviderPointDossier.addAttributes(table_attributairePoint)
             self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
-            self.dataProviderPolygonDossier.addAttributes(table_attributaire)
+            self.dataProviderPolygonDossier.addAttributes(table_attributairePolygons)
             
             self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
             self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
@@ -285,10 +284,17 @@ class GeoFoncierConsultationDetails:
             fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"])])
             
             qgisGeomType = qgisGeom.wkbType()
-            if qgisGeomType == 1:
+            
+            if qgisGeomType == QGis.WKBPoint:
+                fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"]),"1"])
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
-                
-            if qgisGeomType == 3:
+            
+            elif qgisGeomType == QGis.WKBMultiPoint:
+                fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"]),str(len(qgisGeom.asMultiPoint()))])
+                self.dataProviderPointDossier.addFeatures( [ fet ] )
+            
+            elif qgisGeomType == QGis.WKBPolygon:
+                fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"])])
                 self.dataProviderPolygonDossier.addFeatures( [ fet ] )
         
         self.PointLayerDossier.commitChanges()

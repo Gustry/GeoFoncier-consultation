@@ -12,6 +12,7 @@ class KML:
     
     def __init__(self,kml):
         self.__kml = kml
+        self.__pointGeometries = list()
         self.__geometries = list()
         self.__multigeom = None
 
@@ -48,18 +49,33 @@ class KML:
         geom = row.GetGeometryRef()
         self.__multigeom = geom
         #Test d'une multigeom
-        if geom.GetGeometryType() != ogr.wkbPoint and geom.GetGeometryType() != ogr.wkbPolygon and geom.GetGeometryType() != ogr.wkbMultiPoint and geom.GetGeometryType() != ogr.wkbMultiPolygon:
+        if geom.GetGeometryType() != ogr.wkbPoint and geom.GetGeometryType() != ogr.wkbPolygon :
             self.__explodeMultiGeometry(geom)
-        else:
+        elif geom.GetGeometryType() != ogr.wkbPoint:
+            self.__pointGeometries.append(geom)
+        elif geom.GetGeometryType() != ogr.wkbPolygon:
             self.__geometries.append(geom.ExportToWkt())
-
+        else:
+            return "error"
+        
+        if len(self.__pointGeometries)>1:
+            multipoint = ogr.Geometry(ogr.wkbMultiPoint)
+            for i in range(0,len(self.__pointGeometries)):
+                point = self.__pointGeometries[i]
+                multipoint.AddGeometry(point)
+            self.__geometries.append(multipoint.ExportToWkt())
+        else:
+            self.__geometries.append(self.__pointGeometries[0].ExportToWkt())
+        
         return self.__geometries
     
     def __explodeMultiGeometry(self,multigeom) :
         #explosion de la multigeom
         for i in range(0, multigeom.GetGeometryCount()):
             geom = multigeom.GetGeometryRef(i)
-            if geom.GetGeometryType() == ogr.wkbPoint or geom.GetGeometryType() == ogr.wkbMultiPoint or geom.GetGeometryType() == ogr.wkbPolygon or geom.GetGeometryType() == ogr.wkbMultiPolygon:
+            if geom.GetGeometryType() == ogr.wkbPoint:
+                self.__pointGeometries.append(geom)
+            if geom.GetGeometryType() == ogr.wkbPolygon:
                 self.__geometries.append(geom.ExportToWkt())
             else:
                 self.__explodeMultiGeometry(geom)
