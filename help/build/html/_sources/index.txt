@@ -21,3 +21,6 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+
+.. automodule:: connexion_client_GF
+
