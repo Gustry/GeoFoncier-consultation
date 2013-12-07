@@ -244,6 +244,7 @@ class GeoFoncierConsultationDetails:
             self.dossier.loadDetails(self.connexionAPI.get(self.dossier.getURLDossier()))
             
             self.voirCoucheQGIS()
+            
             msgBox.close()
         
         tab = self.dossier.getInformations()
@@ -268,38 +269,43 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.tabWidget.setTabEnabled(1, True);
         self.dlg.ui.tabWidget.setCurrentIndex(1)
         
+        #Zoom sur les géometries
+        envelope = self.dossier.getEnvelope()
+        self.canvas.setExtent(QgsRectangle(envelope[0],envelope[2],envelope[1],envelope[3]))
+        self.canvas.refresh()
+        
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
-        
         self.PointLayerDossier.startEditing()
         self.PolygonLayerDossier.startEditing()        
         
         tab = self.dossier.getInformations()
+        
         geometries = self.dossier.getGeometries()
+        
         for geom in geometries:
             fet = QgsFeature()
             qgisGeom = QgsGeometry.fromWkt(geom)
             fet.setGeometry(qgisGeom)
-            fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"])])
+            fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"])])
             
             qgisGeomType = qgisGeom.wkbType()
             
             if qgisGeomType == QGis.WKBPoint:
-                fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"]),"1"])
+                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),"1"])
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
             
             elif qgisGeomType == QGis.WKBMultiPoint:
-                fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"]),str(len(qgisGeom.asMultiPoint()))])
+                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),str(len(qgisGeom.asMultiPoint()))])
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
             
-            elif qgisGeomType == QGis.WKBPolygon:
-                fet.setAttributes( [(tab["reference"]),(tab["structure"]),(tab["nom_commune"]),(tab["insee_commune"]),(tab["date"])])
+            elif qgisGeomType == QGis.WKBPolygon or qgisGeomType == QGis.WKBMultiPolygon:
+                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"])])
                 self.dataProviderPolygonDossier.addFeatures( [ fet ] )
         
         self.PointLayerDossier.commitChanges()
         self.PolygonLayerDossier.commitChanges()
-
     
     def telechargerKML(self):
         self.informationWindow(u"Bientôt disponible, en cours de dev")

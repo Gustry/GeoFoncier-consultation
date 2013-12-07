@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Tue Dec  3 15:59:31 2013
+# Created: Sat Dec  7 12:28:36 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -124,7 +124,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_reference.setFont(font)
         self.label_reference.setObjectName(_fromUtf8("label_reference"))
         self.layoutWidget1 = QtGui.QWidget(self.tab_2)
-        self.layoutWidget1.setGeometry(QtCore.QRect(20, 50, 211, 201))
+        self.layoutWidget1.setGeometry(QtCore.QRect(20, 70, 211, 151))
         self.layoutWidget1.setObjectName(_fromUtf8("layoutWidget1"))
         self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget1)
         self.verticalLayout.setSpacing(25)
@@ -160,7 +160,7 @@ class Ui_GeoFoncierConsultation(object):
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -177,7 +177,7 @@ class Ui_GeoFoncierConsultation(object):
         self.comboBox_zone.setItemText(4, _translate("GeoFoncierConsultation", "mayotte", None))
         self.pushButton_listerDossiers.setText(_translate("GeoFoncierConsultation", "Lister les dossiers", None))
         self.pushButton_help.setText(_translate("GeoFoncierConsultation", "Aide", None))
-        self.tableWidget_dossiers.setSortingEnabled(True)
+        self.tableWidget_dossiers.setSortingEnabled(False)
         self.label_listeDossiers.setText(_translate("GeoFoncierConsultation", "Dossiers", None))
         self.pushButton_couche_osm.setText(_translate("GeoFoncierConsultation", "Couche cartographique", None))
         self.pushButton_enregistrer_dossiers.setText(_translate("GeoFoncierConsultation", "Enregistrer les dossiers en", None))

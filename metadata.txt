@@ -12,7 +12,7 @@
 name=Mes dossiers GéoFoncier
 qgisMinimumVersion=2.0
 description=Plugin  de diffusion des dossiers aux clients GéoFoncier
-version=0.4-alpha
+version=0.2-alpha
 author=Etienne Trimaille
 email=etienne@trimaille.eu
 

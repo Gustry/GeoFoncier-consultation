@@ -13,7 +13,16 @@ class ConnexionClientGF:
     """Classe client GéoFoncier"""
 
     def __init__(self, login, password, zone):
+        """
+        Constructeur d'une connexion client
         
+        @type login: str
+        @param login: Compte utilisateur
+        @type password:str
+        @param password: Mot de passe
+        @type zone: str
+        @param zone: Zone de l'utilisateur
+        """
         if zone not in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
             raise Exception, "Zone non disponible"
         
@@ -23,15 +32,16 @@ class ConnexionClientGF:
         self.__zone = zone
         self.__url = self.__getURLAPI(login, password)
     
-    '''
-    Private
-    '''
-    
     def __getURLAPI(self,login, password):
-        """A private function to get baz.
-
-        This really should have a full function definition, but I am too lazy.
-
+        """
+        Fonction privée pour obtenir l'URL de l'API entre la recette et production
+        
+        @type login: str
+        @param login: Compte utilisateur
+        @type password:str
+        @param password: Mot de passe
+        @rtype: str
+        @return: URL
         """
         if login == "clientge" and password == "clientge":
             return "https://api-geofoncier.brgm-rec.fr/clientsge/"
@@ -39,16 +49,41 @@ class ConnexionClientGF:
             return "https://api.geofoncier.fr/clientsge/"
             
     def __createLogin(self,login,password):
+        """
+        Fonction privée pour obtenir le header d'authentification HTTP
+        
+        @type login: str
+        @param login: Compte utilisateur
+        @type password:str
+        @param password: Mot de passe
+        @rtype: str
+        @return: Authentification header
+        """
         base64string = base64.encodestring('%s:%s' % (login, password))
         return "Basic %s" % base64string
     
-    '''
-    Public
-    '''
     def getAndSaveExternalDocument(self,ui,component,nameFile):
+        """
+        Fonction de téléchargement et d'enregistrement d'un fichier qui se trouve sur internet
+        
+        @type ui:UI
+        @param ui: Interface graphique
+        @type component:str
+        @param component: URL de la composante
+        @param nameFile: str
+        @param nameFile: Nom du fichier
+        """
         Saver(self.__login,self.__password,self.__url+component,nameFile,ui)
 
     def get(self, composante):
+        """
+        Fonction de téléchargement de données
+        
+        @type composante:str
+        @param composante: URL de la ressource à télécharger
+        @rtype: str
+        @return: Les données
+        """
         url = self.__url+composante
         req = urllib2.Request(url)
         authheader = self.__authentification
@@ -70,6 +105,14 @@ class ConnexionClientGF:
             raise e
             
     def getURLListeDossiers(self,formatOutput):
+        """
+        URL de la liste des dossiers du client
+        
+        @type formatOutput:str
+        @param formatOutput: "Format de sortie"
+        @rtype: str
+        @return: URL
+        """
         if formatOutput == "csv":
             return "dossiers?output=csv&zone="+self.__zone
         elif formatOutput == "kml":
@@ -78,4 +121,12 @@ class ConnexionClientGF:
             return "dossiers?zone="+self.__zone
         
     def getListeDossiers(self,formatOutput="csv"):
+        """
+        Liste des dossiers du client
+        
+        @type formatOutput:str
+        @param formatOutput: "Format de sortie"
+        @rtype: str
+        @return: Les données
+        """
         return self.get(self.getURLListeDossiers(formatOutput))

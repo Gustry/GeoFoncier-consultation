@@ -51,6 +51,7 @@ class Dossier:
             self.__geometrie_kml = KML(geometrie_kml)
         else:
             self.__geometrie_kml = None
+        self.__envelope = None
         
         
     def __getID(self,url):
@@ -76,11 +77,14 @@ class Dossier:
         else:
             return self.__geometrie_kml.getGeometries()
 
-    def getBoundary(self):
+    def getEnvelope(self):
         if self.__geometrie_kml == None:
             return None
+        elif self.__envelope == None:
+            self.__envelope = self.__geometrie_kml.getEnvelope()
+            return self.__envelope
         else:
-            return self.__geometrie_kml.getBoundary()
+            return self.__envelope
     
     def getDocument(self,numDocument):
         return self.__document[numDocument]
