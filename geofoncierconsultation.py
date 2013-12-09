@@ -20,30 +20,23 @@
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
+#from PyQt4.QtCore import *
+from PyQt4.QtCore import SIGNAL, Qt, QSettings, QTranslator, qVersion, QCoreApplication, QObject, QVariant, QFileInfo
 from PyQt4.QtGui import *
 from qgis.core import *
 # Initialize Qt resources from file resources.py
-import resources, urllib2
+import resources
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
 from exception import *
-from KML import *
-from osgeo import ogr
 
 import os.path
-from fileinput import close, filename
+#from fileinput import close, filename
 
 
 class GeoFoncierConsultationDetails:
-    
-    #dossier = None
-    #connexionAPI = None
-    #listeDossierCSV = None
-    #PointLayer = None
-    #PolygonLayer = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -78,13 +71,12 @@ class GeoFoncierConsultationDetails:
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Mes dossiers GéoFoncier", self.action)
-        
+
         #Ajout du connecteur bouton d'aide
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
         QObject.connect(self.dlg.ui.pushButton_telecharger_kml, SIGNAL("clicked()"), self.telechargerKML)
-        QObject.connect(self.dlg.ui.pushButton_zoom_kml, SIGNAL("clicked()"), self.zoomKML)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
         
@@ -97,7 +89,8 @@ class GeoFoncierConsultationDetails:
         self.iface.removeToolBarIcon(self.action)
           
     def aboutWindow(self):
-        infoString = QCoreApplication.translate('GéoFoncier', u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : A DEFINIR")
+        msg = self.dlg.tr(u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : A DEFINIR")
+        infoString = QCoreApplication.translate('GéoFoncier', msg)
         QMessageBox.information(self.dlg,u"GéoFoncier", infoString)
         
     def errorWindow(self,message):
@@ -122,8 +115,6 @@ class GeoFoncierConsultationDetails:
         msgBox.open()
         QApplication.processEvents()
         
-        #global connexionAPI, listeDossierCSV, PointLayer, PolygonLayer
-        
         self.dlg.ui.label_login.setDisabled(True)
         self.dlg.ui.label_password.setDisabled(True)
         self.dlg.ui.label_zone.setDisabled(True)
@@ -143,23 +134,23 @@ class GeoFoncierConsultationDetails:
         listeDossierCSV = ''
         try:
             listeDossierCSV = self.connexionAPI.getListeDossiers()
-        except LoginException, e:
-            self.errorWindow(u"Mauvais nom d'utilisateur ou mot de passe")
+        except LoginException:
+            self.errorWindow(self.dlg.tr(u"Mauvais nom d'utilisateur ou mot de passe"))
             self.run()
-        except NoResult, e:
-            self.errorWindow(u"Aucun dossier pour ce territoire")
+        except NoResult:
+            self.errorWindow(self.dlg.tr(u"Aucun dossier pour ce territoire"))
             self.run()
-        except IOError, e:
-            self.errorWindow(u"Erreur de connexion réseau à GéoFoncier")
+        except IOError:
+            self.errorWindow(self.dlg.tr(u"Erreur de connexion réseau à GéoFoncier"))
             self.run()
         else:
             Dossier.loadFromCSV(listeDossierCSV)
             
             nombreDossiers = Dossier.getNbrDossiers()
             if nombreDossiers == 1 :
-                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ u" dossier trouvé")
+                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ self.dlg.tr(u" dossier trouvé"))
             else :
-                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ u" dossiers trouvés")
+                self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ self.dlg.tr(u" dossiers trouvés"))
                 
             #Remplissage de la tableView
             self.dlg.ui.tableWidget_dossiers.setColumnCount(6)
@@ -189,10 +180,10 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.comboBox_format.show()
             self.dlg.ui.pushButton_enregistrer_dossiers.show()
             self.dlg.ui.pushButton_couche_osm.show()
-            
+
             #Création des couches QGIS
-            self.PointLayerDossier = QgsVectorLayer("Point", u"Dossier Géofoncier", "memory")
-            self.PolygonLayerDossier = QgsVectorLayer("Polygon", u"Dossier Géofoncier", "memory")
+            self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
+            self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
             
             table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
             table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String) ]
@@ -308,10 +299,7 @@ class GeoFoncierConsultationDetails:
         self.PolygonLayerDossier.commitChanges()
     
     def telechargerKML(self):
-        self.informationWindow(u"Bientôt disponible, en cours de dev")
-        
-    def zoomKML(self):
-        self.informationWindow(u"Bientôt disponible, en cours de dev")
+        self.informationWindow(self.dlg.tr(u"Bientôt disponible, en cours de dev"))
 
     def getExternalDocument(self):
         row = self.dlg.ui.listWidget_details.currentRow()
@@ -357,8 +345,8 @@ class GeoFoncierConsultationDetails:
             pass
         
         self.dlg.ui.tabWidget.setTabEnabled(1, False);
-        self.dlg.ui.tabWidget.setTabText(0,"Dossiers")
-        self.dlg.ui.tabWidget.setTabText(1,u"Détails")
+        #self.dlg.ui.tabWidget.setTabText(0,"Dossiers")
+        #self.dlg.ui.tabWidget.setTabText(1,u"Détails")
         self.dlg.ui.label_login.setDisabled(False)
         self.dlg.ui.label_password.setDisabled(False)
         self.dlg.ui.label_zone.setDisabled(False)
@@ -373,7 +361,6 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.pushButton_enregistrer_dossiers.hide()
         self.dlg.ui.pushButton_couche_osm.hide()
         self.dlg.ui.pushButton_telecharger_kml.hide()
-        self.dlg.ui.pushButton_zoom_kml.hide()
         Dossier.truncateDossier()
         self.dlg.show()
 

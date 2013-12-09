@@ -36,7 +36,7 @@
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>clientge</string>
+       <string notr="true">clientge</string>
       </property>
      </widget>
     </item>
@@ -53,7 +53,7 @@
        <bool>true</bool>
       </property>
       <property name="text">
-       <string>clientge</string>
+       <string notr="true">clientge</string>
       </property>
       <property name="echoMode">
        <enum>QLineEdit::Password</enum>
@@ -75,29 +75,32 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="whatsThis">
+       <string notr="true"/>
+      </property>
       <item>
        <property name="text">
-        <string>metropole</string>
+        <string notr="true" comment="Métropole">metropole</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>antilles</string>
+        <string notr="true">antilles</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>guyane</string>
+        <string notr="true">guyane</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>reunion</string>
+        <string notr="true">reunion</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>mayotte</string>
+        <string notr="true">mayotte</string>
        </property>
       </item>
      </widget>
@@ -135,7 +138,7 @@
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Tab 1</string>
+     <string>Dossiers</string>
     </attribute>
     <widget class="QTableWidget" name="tableWidget_dossiers">
      <property name="geometry">
@@ -221,6 +224,9 @@
       </item>
       <item>
        <widget class="QComboBox" name="comboBox_format">
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
         <item>
          <property name="text">
           <string>kml</string>
@@ -228,12 +234,12 @@
         </item>
         <item>
          <property name="text">
-          <string>xml</string>
+          <string notr="true">xml</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>csv</string>
+          <string notr="true">csv</string>
          </property>
         </item>
        </widget>
@@ -243,7 +249,7 @@
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
-     <string>Tab 2</string>
+     <string>Détails</string>
     </attribute>
     <widget class="QListWidget" name="listWidget_details">
      <property name="geometry">
@@ -284,6 +290,9 @@
        <underline>true</underline>
       </font>
      </property>
+     <property name="whatsThis">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -303,6 +312,9 @@
       </property>
       <item>
        <widget class="QLabel" name="label_structure">
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -310,6 +322,9 @@
       </item>
       <item>
        <widget class="QLabel" name="label_commune">
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -317,6 +332,9 @@
       </item>
       <item>
        <widget class="QLabel" name="label_insee">
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -324,6 +342,9 @@
       </item>
       <item>
        <widget class="QLabel" name="label_date">
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -341,13 +362,6 @@
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton_zoom_kml">
-        <property name="text">
-         <string>Zoom</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QPushButton" name="pushButton_telecharger_kml">
         <property name="text">

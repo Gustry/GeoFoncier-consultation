@@ -22,7 +22,6 @@ class KML:
         kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Placemark>'
         kml = kml + self.__kml
         kml = kml + '</Placemark></Document></kml>'
-        print kml
         return kml
     
     def getEnvelope(self):
@@ -42,7 +41,6 @@ class KML:
         #Ouverture du fichier avec OGR
         ogr.UseExceptions()
         driver = ogr.GetDriverByName("kml")
-        print namefile
         datasource = driver.Open(namefile)
         #datasource = driver.Open("/home/etienne/Bureau/test_poly.kml")
         
