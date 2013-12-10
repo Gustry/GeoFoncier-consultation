@@ -1,8 +1,9 @@
 <RCC>
-    <qresource prefix="/resources" >
+    <qresource prefix="/resources">
         <file alias="icon_png">resources/icon.png</file>
-	<file alias="osmfr">resources/osmfr.xml</file>
-	<file alias="point">resources/point.sld</file>
-	<file alias="polygons">resources/polygons.sld</file>
+        <file alias="osmfr">resources/osmfr.xml</file>
+        <file alias="point">resources/point.sld</file>
+        <file alias="polygons">resources/polygons.sld</file>
+        <file alias="translation_en">i18n/geofoncierconsultation_en.qm</file>
     </qresource>
 </RCC>

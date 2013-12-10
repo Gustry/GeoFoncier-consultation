@@ -11,9 +11,12 @@ from document import Document
 from KML import KML
 
 class Dossier:
+    """ Classe dossier"""
     
+    """Variable de classe comportant la liste des dossiers"""
     __listeDossiers = []
     
+    """Méthode statique pour charger les dossiers à partir du CSV"""
     def loadFromCSV(cls,csvString) :
         data = StringIO.StringIO(csvString)
         csvReader = csv.reader(data)
@@ -23,23 +26,28 @@ class Dossier:
                 Dossier.__listeDossiers.append(Dossier(row[5], row[0], row[1], row[2], row[3], row[4]))
     loadFromCSV = classmethod(loadFromCSV)
     
+    """Méthode statique pour obtenir le nombre de dossiers"""
     def getNbrDossiers(cls) :
         return len(Dossier.__listeDossiers)
     getNbrDossiers = classmethod(getNbrDossiers)
     
+    """Méthode statique pour retourne un dossier"""
     def getDossier(cls,row) :
         return Dossier.__listeDossiers[row]
     getDossier = classmethod(getDossier)
     
+    """Méthode statique qui retourne les dossiers"""
     def getListeDossiers(cls) :
         return Dossier.__listeDossiers
     getListeDossiers = classmethod(getListeDossiers)
     
+    """Méthode statique qui vide la liste des dossiers"""
     def truncateDossier(cls) :
         del Dossier.__listeDossiers[:]
     truncateDossier = classmethod(truncateDossier)
     
     def __init__(self,url,structure_ge,reference,nom_commune,insee_commune,date,geometrie_kml = None):
+        """Constructeur de dossier"""
         self.__id = self.__getID(url)
         self.__structure_ge = structure_ge
         self.__reference = reference
@@ -93,6 +101,7 @@ class Dossier:
         return self.__document
     
     def loadDetails(self,data):
+        """Méthode qui permet de rajouter des informations à un dossier à partir du XML"""
         tree = ET.parse(StringIO.StringIO(data))
         root = tree.getroot()
         for child in root[0]:

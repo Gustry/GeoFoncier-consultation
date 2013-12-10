@@ -130,3 +130,6 @@ class ConnexionClientGF:
         @return: Les données
         """
         return self.get(self.getURLListeDossiers(formatOutput))
+    
+    def getURL(self,url):
+        return self.__url+url

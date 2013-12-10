@@ -185,8 +185,8 @@ class GeoFoncierConsultationDetails:
             self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
             self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
             
-            table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String) ]
-            table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String) ]
+            table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("ZIP", QVariant.String) ]
+            table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String), QgsField("ZIP", QVariant.String) ]
             
             self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
             self.dataProviderPointDossier.addAttributes(table_attributairePoint)
@@ -279,20 +279,20 @@ class GeoFoncierConsultationDetails:
             fet = QgsFeature()
             qgisGeom = QgsGeometry.fromWkt(geom)
             fet.setGeometry(qgisGeom)
-            fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"])])
+            #fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"])])
             
             qgisGeomType = qgisGeom.wkbType()
             
             if qgisGeomType == QGis.WKBPoint:
-                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),"1"])
+                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),"1", self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())])
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
             
             elif qgisGeomType == QGis.WKBMultiPoint:
-                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),str(len(qgisGeom.asMultiPoint()))])
+                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),str(len(qgisGeom.asMultiPoint())), self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())])
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
             
             elif qgisGeomType == QGis.WKBPolygon or qgisGeomType == QGis.WKBMultiPolygon:
-                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"])])
+                fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]), self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())])
                 self.dataProviderPolygonDossier.addFeatures( [ fet ] )
         
         self.PointLayerDossier.commitChanges()
@@ -340,13 +340,12 @@ class GeoFoncierConsultationDetails:
                 fichier.close()
                 if ancienneZone != "":
                     index = self.dlg.ui.comboBox_zone.findText(ancienneZone)
-                    self.dlg.ui.comboBox_zone.setCurrentIndex(index)
+                    if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
+                        self.dlg.ui.comboBox_zone.setCurrentIndex(index)
         except IOError:
             pass
         
         self.dlg.ui.tabWidget.setTabEnabled(1, False);
-        #self.dlg.ui.tabWidget.setTabText(0,"Dossiers")
-        #self.dlg.ui.tabWidget.setTabText(1,u"Détails")
         self.dlg.ui.label_login.setDisabled(False)
         self.dlg.ui.label_password.setDisabled(False)
         self.dlg.ui.label_zone.setDisabled(False)
