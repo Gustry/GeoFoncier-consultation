@@ -21,7 +21,7 @@
 """
 # Import the PyQt and QGIS libraries
 #from PyQt4.QtCore import *
-from PyQt4.QtCore import SIGNAL, Qt, QSettings, QTranslator, qVersion, QCoreApplication, QObject, QVariant, QFileInfo
+from PyQt4.QtCore import SIGNAL, Qt, QSettings, QTranslator, qVersion, QCoreApplication, QObject, QVariant, QFileInfo, QUrl
 from PyQt4.QtGui import *
 from qgis.core import *
 # Initialize Qt resources from file resources.py
@@ -80,7 +80,7 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_telecharger_kml, SIGNAL("clicked()"), self.telechargerKML)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
-        
+        QObject.connect(self.dlg.ui.pushButton_site_geofoncier, SIGNAL("clicked()"), self.siteGeoFoncier)
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
 
@@ -386,3 +386,7 @@ class GeoFoncierConsultationDetails:
         with open(os.path.join(self.plugin_dir,"zone.txt"), "w") as fichier :
             fichier.write(zone)
             fichier.close()
+            
+    def siteGeoFoncier(self):
+        desktopService = QDesktopServices()
+        desktopService.openUrl(QUrl("http://www.geofoncier.fr"))

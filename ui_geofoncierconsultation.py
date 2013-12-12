@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Fri Dec 13 00:03:00 2013
+# Created: Fri Dec 13 00:08:50 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -83,7 +83,7 @@ class Ui_GeoFoncierConsultation(object):
         self.comboBox_zone.setItemText(4, _fromUtf8("mayotte"))
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.comboBox_zone)
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.tab_3)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 20, 160, 101))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 20, 191, 101))
         self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_3.setMargin(0)
@@ -92,6 +92,9 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_listerDossiers.setDefault(True)
         self.pushButton_listerDossiers.setObjectName(_fromUtf8("pushButton_listerDossiers"))
         self.verticalLayout_3.addWidget(self.pushButton_listerDossiers)
+        self.pushButton_site_geofoncier = QtGui.QPushButton(self.verticalLayoutWidget_2)
+        self.pushButton_site_geofoncier.setObjectName(_fromUtf8("pushButton_site_geofoncier"))
+        self.verticalLayout_3.addWidget(self.pushButton_site_geofoncier)
         self.pushButton_help = QtGui.QPushButton(self.verticalLayoutWidget_2)
         self.pushButton_help.setObjectName(_fromUtf8("pushButton_help"))
         self.verticalLayout_3.addWidget(self.pushButton_help)
@@ -207,6 +210,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_password.setText(_translate("GeoFoncierConsultation", "Mot de passe", None))
         self.label_zone.setText(_translate("GeoFoncierConsultation", "Territoire", None))
         self.pushButton_listerDossiers.setText(_translate("GeoFoncierConsultation", "Lister les dossiers", None))
+        self.pushButton_site_geofoncier.setText(_translate("GeoFoncierConsultation", "Accéder au site GéoFoncier", None))
         self.pushButton_help.setText(_translate("GeoFoncierConsultation", "Aide", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("GeoFoncierConsultation", "Connexion", None))
         self.label_listeDossiers.setText(_translate("GeoFoncierConsultation", "Dossiers", None))
