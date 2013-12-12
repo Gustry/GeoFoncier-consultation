@@ -25,9 +25,10 @@ from ui_geofoncierconsultation import Ui_GeoFoncierConsultation
 # create the dialog for zoom to point
 
 
-class GeoFoncierConsultationDialog(QtGui.QDialog):
+class GeoFoncierConsultationDialog(QtGui.QDockWidget):
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        QtGui.QDockWidget.__init__(self)
+        
         # Set up the user interface from Designer.
         self.ui = Ui_GeoFoncierConsultation()
         self.ui.setupUi(self)

@@ -1,384 +1,371 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>GeoFoncierConsultation</class>
- <widget class="QDialog" name="GeoFoncierConsultation">
+ <widget class="QDockWidget" name="GeoFoncierConsultation">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>785</width>
-    <height>340</height>
+    <width>854</width>
+    <height>226</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Mes dossiers GéoFoncier</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>10</y>
-     <width>781</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QLabel" name="label_login">
-      <property name="text">
-       <string>Client</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="lineEdit_login">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string notr="true">clientge</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_password">
-      <property name="text">
-       <string>Mot de passe</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="lineEdit_password">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string notr="true">clientge</string>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_zone">
-      <property name="text">
-       <string>Territoire</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="comboBox_zone">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="whatsThis">
-       <string notr="true"/>
-      </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <property name="text">
-        <string notr="true" comment="Métropole">metropole</string>
-       </property>
+       <widget class="QLabel" name="label_login">
+        <property name="text">
+         <string>Client</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string notr="true">antilles</string>
-       </property>
+       <widget class="QLineEdit" name="lineEdit_login">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string notr="true">clientge</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string notr="true">guyane</string>
-       </property>
+       <widget class="QLabel" name="label_password">
+        <property name="text">
+         <string>Mot de passe</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string notr="true">reunion</string>
-       </property>
+       <widget class="QLineEdit" name="lineEdit_password">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string notr="true">clientge</string>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string notr="true">mayotte</string>
-       </property>
+       <widget class="QLabel" name="label_zone">
+        <property name="text">
+         <string>Territoire</string>
+        </property>
+       </widget>
       </item>
-     </widget>
+      <item>
+       <widget class="QComboBox" name="comboBox_zone">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
+        <item>
+         <property name="text">
+          <string notr="true" comment="Métropole">metropole</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string notr="true">antilles</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string notr="true">guyane</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string notr="true">reunion</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string notr="true">mayotte</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_listerDossiers">
+        <property name="text">
+         <string>Lister les dossiers</string>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_help">
+        <property name="text">
+         <string>Aide</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_listerDossiers">
-      <property name="text">
-       <string>Lister les dossiers</string>
+    <item row="1" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="tabPosition">
+       <enum>QTabWidget::West</enum>
       </property>
-      <property name="default">
-       <bool>true</bool>
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_help">
-      <property name="text">
-       <string>Aide</string>
-      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Dossiers</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_listeDossiers">
+            <property name="text">
+             <string>Dossiers</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_couche_osm">
+            <property name="text">
+             <string>Couche cartographique</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_enregistrer_dossiers">
+            <property name="text">
+             <string>Enregistrer les dossiers en</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_format">
+            <property name="whatsThis">
+             <string notr="true"/>
+            </property>
+            <item>
+             <property name="text">
+              <string>kml</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">xml</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">csv</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QTableWidget" name="tableWidget_dossiers">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="gridStyle">
+           <enum>Qt::DashDotDotLine</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Détails</string>
+       </attribute>
+       <widget class="QListWidget" name="listWidget_details">
+        <property name="geometry">
+         <rect>
+          <x>420</x>
+          <y>30</y>
+          <width>351</width>
+          <height>101</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>420</x>
+          <y>10</y>
+          <width>201</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Liste des documents à télécharger :</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_reference">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>131</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+          <underline>true</underline>
+         </font>
+        </property>
+        <property name="whatsThis">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="layoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>211</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_structure">
+           <property name="whatsThis">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_commune">
+           <property name="whatsThis">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_insee">
+           <property name="whatsThis">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_date">
+           <property name="whatsThis">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>40</y>
+          <width>160</width>
+          <height>82</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="pushButton_telecharger_kml">
+           <property name="text">
+            <string>Télécharger KML</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_ZIP">
+           <property name="text">
+            <string>Archive ZIP</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QTabWidget" name="tabWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>40</y>
-     <width>781</width>
-     <height>301</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <widget class="QWidget" name="tab">
-    <attribute name="title">
-     <string>Dossiers</string>
-    </attribute>
-    <widget class="QTableWidget" name="tableWidget_dossiers">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>30</y>
-       <width>771</width>
-       <height>241</height>
-      </rect>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-     <property name="gridStyle">
-      <enum>Qt::DashDotDotLine</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>761</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_listeDossiers">
-        <property name="text">
-         <string>Dossiers</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_couche_osm">
-        <property name="text">
-         <string>Couche cartographique</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_enregistrer_dossiers">
-        <property name="text">
-         <string>Enregistrer les dossiers en</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox_format">
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <item>
-         <property name="text">
-          <string>kml</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">xml</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">csv</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>Détails</string>
-    </attribute>
-    <widget class="QListWidget" name="listWidget_details">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>30</y>
-       <width>351</width>
-       <height>231</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>10</y>
-       <width>201</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Liste des documents à télécharger :</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_reference">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>131</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-       <underline>true</underline>
-      </font>
-     </property>
-     <property name="whatsThis">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>70</y>
-       <width>211</width>
-       <height>151</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="spacing">
-       <number>25</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_structure">
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_commune">
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_insee">
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_date">
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="verticalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>170</y>
-       <width>160</width>
-       <height>82</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton_telecharger_kml">
-        <property name="text">
-         <string>Télécharger KML</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_ZIP">
-        <property name="text">
-         <string>Archive ZIP</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
   </widget>
  </widget>
  <resources/>

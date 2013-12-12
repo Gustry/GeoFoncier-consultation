@@ -59,6 +59,7 @@ class GeoFoncierConsultationDetails:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = GeoFoncierConsultationDialog()
+        self.window = self.iface.mainWindow()
 
     def initGui(self):
         # Create action that will start plugin configuration
@@ -67,7 +68,7 @@ class GeoFoncierConsultationDetails:
             u"GéoFoncier", self.iface.mainWindow())
         # connect the action to the run method
         self.action.triggered.connect(self.run)
-
+        
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Mes dossiers GéoFoncier", self.action)
@@ -87,6 +88,10 @@ class GeoFoncierConsultationDetails:
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu(u"&Mes dossiers GéoFoncier", self.action)
         self.iface.removeToolBarIcon(self.action)
+        
+        if self.iface:
+            self.iface.removeDockWidget(self.dlg)
+        
           
     def aboutWindow(self):
         msg = self.dlg.tr(u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : A DEFINIR")
@@ -196,6 +201,8 @@ class GeoFoncierConsultationDetails:
             self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
             self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
             
+            QObject.connect(self.PointLayerDossier, SIGNAL("layerDeleted()"), self.degriseBoutonOSM)
+            
             self.PointLayerDossier.loadSldStyle(":/resources/point")
             QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
             self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
@@ -279,7 +286,6 @@ class GeoFoncierConsultationDetails:
             fet = QgsFeature()
             qgisGeom = QgsGeometry.fromWkt(geom)
             fet.setGeometry(qgisGeom)
-            #fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"])])
             
             qgisGeomType = qgisGeom.wkbType()
             
@@ -317,6 +323,9 @@ class GeoFoncierConsultationDetails:
         
         QgsMapLayerRegistry.instance().addMapLayer(rlayer)
         self.disableUseOfGlobalCrs()
+
+    def degriseBoutonOSM(self):
+        print "signal !"
         
      #set new Layers to use the Project-CRS'  
     def enableUseOfGlobalCrs(self):  
@@ -329,39 +338,46 @@ class GeoFoncierConsultationDetails:
         self.s.setValue( "/Projections/defaultBehaviour", self.oldValidation ) 
                 
     def run(self):
-        #Initialisation
-        self.dlg.setFixedSize(self.dlg.size());
-        self.dlg.setCursor(Qt.ArrowCursor)
-        
-        #Load zone
+
         try:
-            with open(os.path.join(self.plugin_dir,"zone.txt"), "r") as fichier :
-                ancienneZone = fichier.read()
-                fichier.close()
-                if ancienneZone != "":
-                    index = self.dlg.ui.comboBox_zone.findText(ancienneZone)
-                    if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
-                        self.dlg.ui.comboBox_zone.setCurrentIndex(index)
-        except IOError:
-            pass
-        
-        self.dlg.ui.tabWidget.setTabEnabled(1, False);
-        self.dlg.ui.label_login.setDisabled(False)
-        self.dlg.ui.label_password.setDisabled(False)
-        self.dlg.ui.label_zone.setDisabled(False)
-        self.dlg.ui.lineEdit_login.setDisabled(False)
-        self.dlg.ui.lineEdit_password.setDisabled(False)
-        self.dlg.ui.comboBox_zone.setDisabled(False)
-        self.dlg.ui.pushButton_listerDossiers.setDisabled(False)
-        self.dlg.ui.label_listeDossiers.hide()
-        self.dlg.ui.tableWidget_dossiers.hide()
-        self.dlg.ui.tableWidget_dossiers.clearContents()
-        self.dlg.ui.comboBox_format.hide()
-        self.dlg.ui.pushButton_enregistrer_dossiers.hide()
-        self.dlg.ui.pushButton_couche_osm.hide()
-        self.dlg.ui.pushButton_telecharger_kml.hide()
-        Dossier.truncateDossier()
-        self.dlg.show()
+            self.connexionAPI
+        except AttributeError:
+            #Initialisation
+            self.window.addDockWidget(Qt.BottomDockWidgetArea, self.dlg)
+            self.dlg.setCursor(Qt.ArrowCursor)
+            
+            #Load zone
+            try:
+                with open(os.path.join(self.plugin_dir,"zone.txt"), "r") as fichier :
+                    ancienneZone = fichier.read()
+                    fichier.close()
+                    if ancienneZone != "":
+                        index = self.dlg.ui.comboBox_zone.findText(ancienneZone)
+                        if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
+                            self.dlg.ui.comboBox_zone.setCurrentIndex(index)
+            except IOError:
+                pass
+            
+            self.dlg.ui.tabWidget.setTabEnabled(1, False);
+            self.dlg.ui.label_login.setDisabled(False)
+            self.dlg.ui.label_password.setDisabled(False)
+            self.dlg.ui.label_zone.setDisabled(False)
+            self.dlg.ui.lineEdit_login.setDisabled(False)
+            self.dlg.ui.lineEdit_password.setDisabled(False)
+            self.dlg.ui.comboBox_zone.setDisabled(False)
+            self.dlg.ui.pushButton_listerDossiers.setDisabled(False)
+            self.dlg.ui.label_listeDossiers.hide()
+            self.dlg.ui.tableWidget_dossiers.hide()
+            self.dlg.ui.tableWidget_dossiers.clearContents()
+            self.dlg.ui.comboBox_format.hide()
+            self.dlg.ui.pushButton_enregistrer_dossiers.hide()
+            self.dlg.ui.pushButton_couche_osm.hide()
+            self.dlg.ui.pushButton_telecharger_kml.hide()
+            Dossier.truncateDossier()
+            self.dlg.show()
+            
+        else:
+            self.dlg.show()
 
     def saveZone(self, zone):
         with open(os.path.join(self.plugin_dir,"zone.txt"), "w") as fichier :
