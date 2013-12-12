@@ -209,6 +209,8 @@ class GeoFoncierConsultationDetails:
             QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
             
             msgBox.close()
+            self.dlg.ui.tabWidget.setTabEnabled(1, True);
+            self.dlg.ui.tabWidget.setCurrentIndex(1)
             self.dlg.setCursor(Qt.ArrowCursor)
 
     def enregistrerZIP(self):
@@ -264,8 +266,8 @@ class GeoFoncierConsultationDetails:
             pass
         
         self.dlg.ui.listWidget_details.clicked.connect(self.getExternalDocument)
-        self.dlg.ui.tabWidget.setTabEnabled(1, True);
-        self.dlg.ui.tabWidget.setCurrentIndex(1)
+        self.dlg.ui.tabWidget.setTabEnabled(2, True);
+        self.dlg.ui.tabWidget.setCurrentIndex(2)
         
         #Zoom sur les géometries
         envelope = self.dossier.getEnvelope()
@@ -359,6 +361,7 @@ class GeoFoncierConsultationDetails:
                 pass
             
             self.dlg.ui.tabWidget.setTabEnabled(1, False);
+            self.dlg.ui.tabWidget.setTabEnabled(2, False);
             self.dlg.ui.label_login.setDisabled(False)
             self.dlg.ui.label_password.setDisabled(False)
             self.dlg.ui.label_zone.setDisabled(False)

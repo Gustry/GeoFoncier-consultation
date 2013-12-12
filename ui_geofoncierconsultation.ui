@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>854</width>
-    <height>226</height>
+    <height>200</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,116 +22,160 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_login">
-        <property name="text">
-         <string>Client</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_login">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string notr="true">clientge</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_password">
-        <property name="text">
-         <string>Mot de passe</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_password">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string notr="true">clientge</string>
-        </property>
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_zone">
-        <property name="text">
-         <string>Territoire</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox_zone">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="whatsThis">
-         <string notr="true"/>
-        </property>
-        <item>
-         <property name="text">
-          <string notr="true" comment="Métropole">metropole</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">antilles</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">guyane</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">reunion</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">mayotte</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_listerDossiers">
-        <property name="text">
-         <string>Lister les dossiers</string>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_help">
-        <property name="text">
-         <string>Aide</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="tabPosition">
-       <enum>QTabWidget::West</enum>
+       <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Connexion</string>
+       </attribute>
+       <widget class="QWidget" name="formLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>211</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_login">
+           <property name="text">
+            <string>Client</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEdit_login">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string notr="true">clientge</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_password">
+           <property name="text">
+            <string>Mot de passe</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEdit_password">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string notr="true">clientge</string>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_zone">
+           <property name="text">
+            <string>Territoire</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="comboBox_zone">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="whatsThis">
+            <string notr="true"/>
+           </property>
+           <item>
+            <property name="text">
+             <string notr="true" comment="Métropole">metropole</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">antilles</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">guyane</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">reunion</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string notr="true">mayotte</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="verticalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>20</y>
+          <width>160</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QPushButton" name="pushButton_listerDossiers">
+           <property name="text">
+            <string>Lister les dossiers</string>
+           </property>
+           <property name="default">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_help">
+           <property name="text">
+            <string>Aide</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>455</x>
+          <y>4</y>
+          <width>201</width>
+          <height>111</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="resources.qrc">:/resources/banniere</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Dossiers</string>
@@ -368,6 +412,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
