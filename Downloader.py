@@ -4,7 +4,6 @@ from PyQt4.QtGui import QApplication, QFileDialog, QDialog, QProgressBar, QLabel
                     QVBoxLayout, QMessageBox
 from PyQt4.QtNetwork import QHttp
 from urlparse import urlparse, parse_qs
-from openlayers_plugin.openlayers_ovwidget import QString
 
 
 class Downloader(QDialog):
