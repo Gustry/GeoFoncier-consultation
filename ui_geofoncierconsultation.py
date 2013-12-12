@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Fri Dec 13 00:08:50 2013
+# Created: Fri Dec 13 00:28:46 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -99,7 +99,7 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_help.setObjectName(_fromUtf8("pushButton_help"))
         self.verticalLayout_3.addWidget(self.pushButton_help)
         self.label_2 = QtGui.QLabel(self.tab_3)
-        self.label_2.setGeometry(QtCore.QRect(455, 4, 201, 111))
+        self.label_2.setGeometry(QtCore.QRect(480, 4, 201, 111))
         self.label_2.setText(_fromUtf8(""))
         self.label_2.setPixmap(QtGui.QPixmap(_fromUtf8(":/resources/banniere")))
         self.label_2.setScaledContents(True)
@@ -117,6 +117,9 @@ class Ui_GeoFoncierConsultation(object):
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.pushButton_couche_osm = QtGui.QPushButton(self.tab)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.pushButton_couche_osm.setIcon(icon)
         self.pushButton_couche_osm.setObjectName(_fromUtf8("pushButton_couche_osm"))
         self.horizontalLayout_2.addWidget(self.pushButton_couche_osm)
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -194,6 +197,9 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_telecharger_kml.setObjectName(_fromUtf8("pushButton_telecharger_kml"))
         self.verticalLayout_2.addWidget(self.pushButton_telecharger_kml)
         self.pushButton_ZIP = QtGui.QPushButton(self.verticalLayoutWidget)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/zip")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_ZIP.setIcon(icon1)
         self.pushButton_ZIP.setObjectName(_fromUtf8("pushButton_ZIP"))
         self.verticalLayout_2.addWidget(self.pushButton_ZIP)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
@@ -201,7 +207,7 @@ class Ui_GeoFoncierConsultation(object):
         GeoFoncierConsultation.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
