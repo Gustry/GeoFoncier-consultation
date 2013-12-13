@@ -80,6 +80,7 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_telecharger_kml, SIGNAL("clicked()"), self.telechargerKML)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
+        QObject.connect(self.dlg.ui.pushButton_couche_gsat, SIGNAL("clicked()"), self.ajouterCoucheGSAT)
         QObject.connect(self.dlg.ui.pushButton_site_geofoncier, SIGNAL("clicked()"), self.siteGeoFoncier)
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
@@ -318,6 +319,18 @@ class GeoFoncierConsultationDetails:
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"osmfr.xml"))
         rlayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
+        
+        if not rlayer.isValid():
+            print "Layer failed to load!"
+        rlayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
+        
+        QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+        self.disableUseOfGlobalCrs()
+        
+    def ajouterCoucheGSAT(self):
+        self.enableUseOfGlobalCrs()
+        fileInfo = QFileInfo(os.path.join(self.resources_dir,"googlesat.xml"))
+        rlayer = QgsRasterLayer(fileInfo.filePath(), u"Photo aérienne Google")
         
         if not rlayer.isValid():
             print "Layer failed to load!"

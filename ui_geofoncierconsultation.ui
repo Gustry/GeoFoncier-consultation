@@ -27,7 +27,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -219,6 +219,17 @@
              <iconset>
               <normalon>:/resources/map</normalon>
              </iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_couche_gsat">
+            <property name="text">
+             <string>Photo aérienne Google</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/map</normaloff>:/resources/map</iconset>
             </property>
            </widget>
           </item>
