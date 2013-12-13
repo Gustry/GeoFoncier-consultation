@@ -142,12 +142,15 @@ class GeoFoncierConsultationDetails:
             listeDossierCSV = self.connexionAPI.getListeDossiers()
         except LoginException:
             self.errorWindow(self.dlg.tr(u"Mauvais nom d'utilisateur ou mot de passe"))
+            del self.connexionAPI
             self.run()
         except NoResult:
             self.errorWindow(self.dlg.tr(u"Aucun dossier pour ce territoire"))
+            del self.connexionAPI
             self.run()
         except IOError:
             self.errorWindow(self.dlg.tr(u"Erreur de connexion réseau à GéoFoncier"))
+            del self.connexionAPI
             self.run()
         else:
             Dossier.loadFromCSV(listeDossierCSV)
