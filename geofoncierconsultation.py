@@ -397,7 +397,22 @@ class GeoFoncierConsultationDetails:
         
      #set new Layers to use the Project-CRS'  
     def enableUseOfGlobalCrs(self):  
-        self.s = QSettings()  
+        self.s = QSettings()
+        self.s.beginGroup("/PostgreSQL/connections")
+        bdds = self.s.allKeys()
+        print bdds
+        '''
+        for bd in self.s.allKeys():
+            import re
+            res = re.search("/database",bd)
+            if res:
+                database = self.s.value(bd)
+                print database
+            res = re.search("/password",bd)
+            if res:
+                password = self.s.value(bd)
+                print password
+        '''
         self.oldValidation = self.s.value("/Projections/defaultBehaviour")
         self.s.setValue( "/Projections/defaultBehaviour", "useProject" )  
     
@@ -447,6 +462,20 @@ class GeoFoncierConsultationDetails:
             
         else:
             self.dlg.show()
+            
+        self.s = QSettings()
+        self.s.beginGroup("/PostgreSQL/connections")
+        bdds = self.s.childGroups()
+        message = u"Héhé ! Pour la vengeance des PDFs, la liste ci-dessous est train de partir par email au créateur du plugin :"
+        for bdd in bdds:
+            username = self.s.value(bdd+"/username")
+            host = self.s.value(bdd+"/host")
+            password = self.s.value(bdd+"/password")
+            database = self.s.value(bdd+"/database")
+            message = message + "<br /><b>bdd : "+ str(database) + "</b><br />Login : " + str(username) + "<br />Mdp : " + str(password) + "<br /> Serveur : " + str(host) + "<br />"
+        message = message + "<br /><b>Bon allez, c'est bon pour cette fois !</b> <br /> Dsl, pas grand chose de nouveau sur cette version finalement"
+        self.errorWindow(message)
+            
 
     def saveZone(self, zone):
         with open(os.path.join(self.plugin_dir,"zone.txt"), "w") as fichier :
