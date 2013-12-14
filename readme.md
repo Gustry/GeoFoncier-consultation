@@ -7,7 +7,7 @@ Version disponible : anglais et français
 
 # Installation
 
-* Installation manuel : https://github.com/Gustry/GeoFoncier-consultation/archive/ui.zip
+* Installation manuel : https://github.com/Gustry/GeoFoncier-consultation/archive/master.zip
  * Décompressez l'archive et déplacer le dossier dans votre répertoire des plugins python de QGIS.
 
 * Installation via un dépôt : http://qgis.trimaille.eu/
