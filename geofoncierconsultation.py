@@ -189,33 +189,29 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.comboBox_format.show()
             self.dlg.ui.pushButton_enregistrer_dossiers.show()
             self.dlg.ui.pushButton_couche_osm.show()
-
-            #Création des couches QGIS
-            self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
-            self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
-            
-            table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("ZIP", QVariant.String) ]
-            table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String), QgsField("ZIP", QVariant.String) ]
-            
-            self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
-            self.dataProviderPointDossier.addAttributes(table_attributairePoint)
-            self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
-            self.dataProviderPolygonDossier.addAttributes(table_attributairePolygons)
-            
-            self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
-            self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
-            
-            QObject.connect(self.PointLayerDossier, SIGNAL("layerDeleted()"), self.degriseBoutonOSM)
-            
-            self.PointLayerDossier.loadSldStyle(":/resources/point")
-            QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
-            self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
-            QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
             
             msgBox.close()
             self.dlg.ui.tabWidget.setTabEnabled(1, True);
             self.dlg.ui.tabWidget.setCurrentIndex(1)
             self.dlg.setCursor(Qt.ArrowCursor)
+
+    def addPointLayerDossier(self):
+        self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
+        table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String), QgsField("ZIP", QVariant.String) ]
+        self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
+        self.dataProviderPointDossier.addAttributes(table_attributairePoint)
+        self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.PointLayerDossier.loadSldStyle(":/resources/point")
+        QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
+        
+    def addPolygonLayerDossier(self):
+        self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
+        table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("ZIP", QVariant.String) ]
+        self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
+        self.dataProviderPolygonDossier.addAttributes(table_attributairePolygons)
+        self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
+        QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
 
     def enregistrerZIP(self):
         self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),"dossier_"+self.dossier.getReference()+".zip")
@@ -281,11 +277,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
-        self.PointLayerDossier.startEditing()
-        self.PolygonLayerDossier.startEditing()        
-        
         tab = self.dossier.getInformations()
-        
         geometries = self.dossier.getGeometries()
         
         for geom in geometries:
@@ -296,20 +288,44 @@ class GeoFoncierConsultationDetails:
             qgisGeomType = qgisGeom.wkbType()
             
             if qgisGeomType == QGis.WKBPoint:
+                
+                #Verification de l'existence de la couche
+                try:
+                    self.PointLayerDossier
+                except AttributeError:
+                    self.addPointLayerDossier()
+                
                 fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),"1", self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())])
+                self.PointLayerDossier.startEditing()
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
+                self.PointLayerDossier.commitChanges()
             
             elif qgisGeomType == QGis.WKBMultiPoint:
+                
+                #Verification de l'existence de la couche
+                try:
+                    self.PointLayerDossier
+                except AttributeError:
+                    self.addPointLayerDossier()
+                
                 fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]),str(len(qgisGeom.asMultiPoint())), self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())])
+                self.PointLayerDossier.startEditing()
                 self.dataProviderPointDossier.addFeatures( [ fet ] )
+                self.PointLayerDossier.commitChanges()
             
             elif qgisGeomType == QGis.WKBPolygon or qgisGeomType == QGis.WKBMultiPolygon:
+                
+                #Verification de l'existence de la couche
+                try:
+                    self.PolygonLayerDossier
+                except AttributeError:
+                    self.addPolygonLayerDossier()
+                
                 fet.setAttributes( [self.dlg.trUtf8(tab["reference"]),self.dlg.trUtf8(tab["structure"]),self.dlg.trUtf8(tab["nom_commune"]),self.dlg.trUtf8(tab["insee_commune"]),self.dlg.trUtf8(tab["date"]), self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())])
+                self.PolygonLayerDossier.startEditing()
                 self.dataProviderPolygonDossier.addFeatures( [ fet ] )
+                self.PolygonLayerDossier.commitChanges()
         
-        self.PointLayerDossier.commitChanges()
-        self.PolygonLayerDossier.commitChanges()
-    
     def telechargerKML(self):
         self.informationWindow(self.dlg.tr(u"Bientôt disponible, en cours de dev"))
 
