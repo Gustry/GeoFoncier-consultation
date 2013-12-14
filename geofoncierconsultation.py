@@ -72,6 +72,9 @@ class GeoFoncierConsultationDetails:
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Mes dossiers GéoFoncier", self.action)
+        
+        #Dictionnaire des couches
+        self.layers = {}
 
         #Ajout du connecteur bouton d'aide
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
@@ -199,10 +202,12 @@ class GeoFoncierConsultationDetails:
             self.dlg.setCursor(Qt.ArrowCursor)
             
     def layerDeleted(self,idLayer):
-        if idLayer == self.osmLayerID:
-            self.dlg.ui.pushButton_couche_osm.setEnabled(True)
-        elif idLayer == self.googleLayerID:
-            self.dlg.ui.pushButton_couche_gsat.setEnabled(True)
+        for i in self.layers:
+            if idLayer == i:
+                if self.layers[i] == "osm":
+                    self.dlg.ui.pushButton_couche_osm.setEnabled(True)
+                elif self.layers[i] == "googlesat":
+                    self.dlg.ui.pushButton_couche_gsat.setEnabled(True)
 
     def addPointLayerDossier(self):
         self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
@@ -369,7 +374,7 @@ class GeoFoncierConsultationDetails:
         self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
         
         QgsMapLayerRegistry.instance().addMapLayer(self.osmLayer)
-        self.osmLayerID = self.osmLayer.id()
+        self.layers[self.osmLayer.id()] = "osm"
         self.dlg.ui.pushButton_couche_osm.setEnabled(False)
         self.disableUseOfGlobalCrs()
         
@@ -383,7 +388,7 @@ class GeoFoncierConsultationDetails:
         self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
         
         QgsMapLayerRegistry.instance().addMapLayer(self.googleLayer)
-        self.googleLayerID = self.googleLayer.id()
+        self.layers[self.googleLayer.id()] = "googlesat"
         self.dlg.ui.pushButton_couche_gsat.setEnabled(False)
         self.disableUseOfGlobalCrs()
 
