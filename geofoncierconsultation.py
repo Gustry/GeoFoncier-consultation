@@ -82,8 +82,11 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
         QObject.connect(self.dlg.ui.pushButton_couche_gsat, SIGNAL("clicked()"), self.ajouterCoucheGSAT)
         QObject.connect(self.dlg.ui.pushButton_site_geofoncier, SIGNAL("clicked()"), self.siteGeoFoncier)
+        
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
+
+        QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerRemoved(QString)"), self.layerDeleted)
 
     def unload(self):
         # Remove the plugin menu item and icon
@@ -194,6 +197,12 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.tabWidget.setTabEnabled(1, True);
             self.dlg.ui.tabWidget.setCurrentIndex(1)
             self.dlg.setCursor(Qt.ArrowCursor)
+            
+    def layerDeleted(self,idLayer):
+        if idLayer == self.osmLayerID:
+            self.dlg.ui.pushButton_couche_osm.setEnabled(True)
+        elif idLayer == self.googleLayerID:
+            self.dlg.ui.pushButton_couche_gsat.setEnabled(True)
 
     def addPointLayerDossier(self):
         self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
@@ -360,6 +369,8 @@ class GeoFoncierConsultationDetails:
         self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
         
         QgsMapLayerRegistry.instance().addMapLayer(self.osmLayer)
+        self.osmLayerID = self.osmLayer.id()
+        self.dlg.ui.pushButton_couche_osm.setEnabled(False)
         self.disableUseOfGlobalCrs()
         
     def ajouterCoucheGSAT(self):
@@ -372,6 +383,8 @@ class GeoFoncierConsultationDetails:
         self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
         
         QgsMapLayerRegistry.instance().addMapLayer(self.googleLayer)
+        self.googleLayerID = self.googleLayer.id()
+        self.dlg.ui.pushButton_couche_gsat.setEnabled(False)
         self.disableUseOfGlobalCrs()
 
     def degriseBoutonOSM(self):
