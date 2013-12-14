@@ -3,3 +3,6 @@ zone.txt
 *.pyc
 index.html
 GeoFoncierConsultation.zip
+Makefile
+plugin_upload.py
+html/
