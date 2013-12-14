@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Fri Dec 13 17:58:05 2013
+# Created: Sat Dec 14 13:55:20 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -261,5 +261,3 @@ class Ui_GeoFoncierConsultation(object):
         self.label_7.setText(_translate("GeoFoncierConsultation", "Date :", None))
         self.label_date.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("GeoFoncierConsultation", "Détails", None))
-
-import resources_rc

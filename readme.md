@@ -23,3 +23,5 @@ Version disponible : anglais et français
  * https://github.com/Gustry/GeoFoncier-consultation
 * Rapport de bugs :
  * https://github.com/Gustry/GeoFoncier-consultation/issues
+* Documentation du code :
+ * https://qgis.trimaille.eu/geofoncier/
