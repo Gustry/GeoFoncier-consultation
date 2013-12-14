@@ -203,6 +203,10 @@ class GeoFoncierConsultationDetails:
         self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
         self.PointLayerDossier.loadSldStyle(":/resources/point")
         QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
+        QObject.connect(self.PointLayerDossier, SIGNAL("layerDeleted()"), self.PointLayerDossierDeleted)
+    
+    def PointLayerDossierDeleted(self):
+        del self.PointLayerDossier
         
     def addPolygonLayerDossier(self):
         self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
@@ -212,6 +216,10 @@ class GeoFoncierConsultationDetails:
         self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
         self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
         QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
+        QObject.connect(self.PolygonLayerDossier, SIGNAL("layerDeleted()"), self.PolygonLayerDossierDeleted)
+        
+    def PolygonLayerDossierDeleted(self):
+        del self.PolygonLayerDossier
 
     def enregistrerZIP(self):
         self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),"dossier_"+self.dossier.getReference()+".zip")
@@ -337,25 +345,25 @@ class GeoFoncierConsultationDetails:
     def ajouterCoucheOSM(self):
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"osmfr.xml"))
-        rlayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
+        self.osmLayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
         
-        if not rlayer.isValid():
+        if not self.osmLayer.isValid():
             print "Layer failed to load!"
-        rlayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
         
-        QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+        QgsMapLayerRegistry.instance().addMapLayer(self.osmLayer)
         self.disableUseOfGlobalCrs()
         
     def ajouterCoucheGSAT(self):
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"googlesat.xml"))
-        rlayer = QgsRasterLayer(fileInfo.filePath(), u"Photo aérienne Google")
+        self.googleLayer = QgsRasterLayer(fileInfo.filePath(), u"Photo aérienne Google")
         
-        if not rlayer.isValid():
+        if not self.googleLayer.isValid():
             print "Layer failed to load!"
-        rlayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
         
-        QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+        QgsMapLayerRegistry.instance().addMapLayer(self.googleLayer)
         self.disableUseOfGlobalCrs()
 
     def degriseBoutonOSM(self):
