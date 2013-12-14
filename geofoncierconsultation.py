@@ -31,7 +31,7 @@ from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
 from exception import *
-
+import unicodedata
 import os.path
 #from fileinput import close, filename
 
@@ -222,11 +222,19 @@ class GeoFoncierConsultationDetails:
         del self.PolygonLayerDossier
 
     def enregistrerZIP(self):
-        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),"dossier_"+self.dossier.getReference()+".zip")
+        fichier = "dossier_"+self.dossier.getReference()+".zip"
+        fichier = fichier.decode('utf-8')
+        fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
+        fichier = "-".join(fichier.split())
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
         
     def getArchive(self,row):
         self.dossier = Dossier.getDossier(row)
-        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),"dossier_"+self.dossier.getReference()+".zip")
+        fichier = "dossier_"+self.dossier.getReference()+".zip"
+        fichier = fichier.decode('utf-8')
+        fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
+        fichier = "-".join(fichier.split())
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
 
     def enregistrerDossiers(self):
         formatOutput = self.dlg.ui.comboBox_format.currentText()
