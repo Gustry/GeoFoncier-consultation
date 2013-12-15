@@ -24,8 +24,7 @@
 from PyQt4.QtCore import SIGNAL, Qt, QSettings, QTranslator, qVersion, QCoreApplication, QObject, QVariant, QFileInfo, QUrl
 from PyQt4.QtGui import *
 from qgis.core import *
-# Initialize Qt resources from file resources.py
-import resources
+
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 from connexion_client_GF import ConnexionClientGF
