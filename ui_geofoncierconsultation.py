@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Sat Dec 14 13:55:20 2013
+# Created: Sun Dec 15 11:39:51 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,12 +26,13 @@ except AttributeError:
 class Ui_GeoFoncierConsultation(object):
     def setupUi(self, GeoFoncierConsultation):
         GeoFoncierConsultation.setObjectName(_fromUtf8("GeoFoncierConsultation"))
-        GeoFoncierConsultation.resize(854, 200)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        GeoFoncierConsultation.resize(854, 215)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(GeoFoncierConsultation.sizePolicy().hasHeightForWidth())
         GeoFoncierConsultation.setSizePolicy(sizePolicy)
+        GeoFoncierConsultation.setMinimumSize(QtCore.QSize(684, 195))
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
         self.gridLayout = QtGui.QGridLayout(self.dockWidgetContents)
@@ -42,9 +43,10 @@ class Ui_GeoFoncierConsultation(object):
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
         self.formLayoutWidget = QtGui.QWidget(self.tab_3)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(20, 20, 211, 101))
+        self.formLayoutWidget.setGeometry(QtCore.QRect(20, 20, 211, 105))
         self.formLayoutWidget.setObjectName(_fromUtf8("formLayoutWidget"))
         self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
+        self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
         self.formLayout.setMargin(0)
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
         self.label_login = QtGui.QLabel(self.formLayoutWidget)
@@ -52,7 +54,7 @@ class Ui_GeoFoncierConsultation(object):
         self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_login)
         self.lineEdit_login = QtGui.QLineEdit(self.formLayoutWidget)
         self.lineEdit_login.setEnabled(True)
-        self.lineEdit_login.setText(_fromUtf8("clientge"))
+        self.lineEdit_login.setText(_fromUtf8(""))
         self.lineEdit_login.setObjectName(_fromUtf8("lineEdit_login"))
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.lineEdit_login)
         self.label_password = QtGui.QLabel(self.formLayoutWidget)
@@ -60,7 +62,7 @@ class Ui_GeoFoncierConsultation(object):
         self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_password)
         self.lineEdit_password = QtGui.QLineEdit(self.formLayoutWidget)
         self.lineEdit_password.setEnabled(True)
-        self.lineEdit_password.setText(_fromUtf8("clientge"))
+        self.lineEdit_password.setText(_fromUtf8(""))
         self.lineEdit_password.setEchoMode(QtGui.QLineEdit.Password)
         self.lineEdit_password.setObjectName(_fromUtf8("lineEdit_password"))
         self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.lineEdit_password)
@@ -82,8 +84,15 @@ class Ui_GeoFoncierConsultation(object):
         self.comboBox_zone.addItem(_fromUtf8(""))
         self.comboBox_zone.setItemText(4, _fromUtf8("mayotte"))
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.comboBox_zone)
+        self.checkBox_memoriser = QtGui.QCheckBox(self.formLayoutWidget)
+        self.checkBox_memoriser.setText(_fromUtf8(""))
+        self.checkBox_memoriser.setObjectName(_fromUtf8("checkBox_memoriser"))
+        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.checkBox_memoriser)
+        self.label_8 = QtGui.QLabel(self.formLayoutWidget)
+        self.label_8.setObjectName(_fromUtf8("label_8"))
+        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_8)
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.tab_3)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 20, 191, 101))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 20, 191, 81))
         self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_3.setMargin(0)
@@ -228,7 +237,7 @@ class Ui_GeoFoncierConsultation(object):
         GeoFoncierConsultation.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -236,6 +245,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_login.setText(_translate("GeoFoncierConsultation", "Client", None))
         self.label_password.setText(_translate("GeoFoncierConsultation", "Mot de passe", None))
         self.label_zone.setText(_translate("GeoFoncierConsultation", "Territoire", None))
+        self.label_8.setText(_translate("GeoFoncierConsultation", "Mémoriser", None))
         self.pushButton_listerDossiers.setText(_translate("GeoFoncierConsultation", "Lister les dossiers", None))
         self.pushButton_site_geofoncier.setText(_translate("GeoFoncierConsultation", "Accéder au site GéoFoncier", None))
         self.pushButton_help.setText(_translate("GeoFoncierConsultation", "Aide", None))
@@ -261,3 +271,5 @@ class Ui_GeoFoncierConsultation(object):
         self.label_7.setText(_translate("GeoFoncierConsultation", "Date :", None))
         self.label_date.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("GeoFoncierConsultation", "Détails", None))
+
+import resources_rc

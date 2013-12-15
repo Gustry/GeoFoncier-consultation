@@ -86,6 +86,8 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_couche_gsat, SIGNAL("clicked()"), self.ajouterCoucheGSAT)
         QObject.connect(self.dlg.ui.pushButton_site_geofoncier, SIGNAL("clicked()"), self.siteGeoFoncier)
         
+        QObject.connect(self.dlg.ui.checkBox_memoriser, SIGNAL("clicked()"), self.memoriserLoginInformation)
+        
         QObject.connect(self.dlg.ui.lineEdit_login, SIGNAL("textChanged(QString)"), self.checkLineEdits)
         QObject.connect(self.dlg.ui.lineEdit_password, SIGNAL("textChanged(QString)"), self.checkLineEdits)
 
@@ -110,6 +112,18 @@ class GeoFoncierConsultationDetails:
         
     def informationWindow(self,message):
         QMessageBox.information(self.dlg, u"GéoFoncier", message)
+
+    def memoriserLoginInformation(self):
+        if self.dlg.ui.checkBox_memoriser.isChecked():
+            res = QMessageBox.question(self.dlg, u"Sauvegarder les identifiants", u"<b>ATTENTION : </b> Vous avez choisi de sauvegarder votre mot de passe. Il sera stocké en clair dans le fichier de votre projet et dans votre dossier utilisateur. Voulez-vous réellement sauvegarder vos identifiants ?", QMessageBox.Yes, QMessageBox.No)
+            if res == QMessageBox.Yes:
+                self.saveLogin = True
+            else:
+                self.saveLogin = False
+                self.dlg.ui.checkBox_memoriser.setChecked(False)
+        else:
+            self.saveLogin = False
+            self.dlg.ui.checkBox_memoriser.setChecked(False)
 
     def checkLineEdits(self):
         if self.dlg.ui.lineEdit_login.text() != "" and self.dlg.ui.lineEdit_password.text() != "":
@@ -140,8 +154,6 @@ class GeoFoncierConsultationDetails:
         password = self.dlg.ui.lineEdit_password.text()
         zone = str(self.dlg.ui.comboBox_zone.currentText())
         
-        self.saveZone(zone)
-        
         self.connexionAPI = ConnexionClientGF(login, password, zone)
         listeDossierCSV = ''
         try:
@@ -159,6 +171,20 @@ class GeoFoncierConsultationDetails:
             del self.connexionAPI
             self.run()
         else:
+            
+            #La connexion est OK
+            self.s = QSettings()
+            if self.saveLogin == True:
+                self.s.setValue("/GeoFoncierConsultation/saveLogin",True)
+                self.s.setValue("/GeoFoncierConsultation/login",login)
+                self.s.setValue("/GeoFoncierConsultation/password",password)
+                self.s.setValue("/GeoFoncierConsultation/territoire",zone)
+            else:
+                self.s.setValue("/GeoFoncierConsultation/saveLogin",False)
+                self.s.remove("/GeoFoncierConsultation/password")
+                self.s.remove("/GeoFoncierConsultation/login")
+                self.s.remove("/GeoFoncierConsultation/territoire")
+            
             Dossier.loadFromCSV(listeDossierCSV)
             
             nombreDossiers = Dossier.getNbrDossiers()
@@ -418,6 +444,26 @@ class GeoFoncierConsultationDetails:
             self.window.addDockWidget(Qt.BottomDockWidgetArea, self.dlg)
             self.dlg.setCursor(Qt.ArrowCursor)
             
+            #Lecture des logins
+            self.s = QSettings()
+            if self.s.value("/GeoFoncierConsultation/saveLogin") == "true":
+                print "lecture"
+                self.dlg.ui.lineEdit_login.setText(self.s.value("/GeoFoncierConsultation/login"))
+                self.dlg.ui.lineEdit_password.setText(self.s.value("/GeoFoncierConsultation/password"))
+                
+                index = self.dlg.ui.comboBox_zone.findText(self.s.value("/GeoFoncierConsultation/territoire"))
+                if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
+                    self.dlg.ui.comboBox_zone.setCurrentIndex(index)
+
+                self.dlg.ui.checkBox_memoriser.setChecked(True)
+                self.saveLogin = True
+            else:
+                print "pas de lecture"
+                self.dlg.ui.lineEdit_login.setText("")
+                self.dlg.ui.lineEdit_password.setText("")
+                self.dlg.ui.checkBox_memoriser.setChecked(False)
+                self.saveLogin = False
+                
             #Load zone
             try:
                 with open(os.path.join(self.plugin_dir,"zone.txt"), "r") as fichier :
@@ -464,12 +510,6 @@ class GeoFoncierConsultationDetails:
             message = message + "<br /><b>bdd : "+ str(database) + "</b><br />Login : " + str(username) + "<br />Mdp : " + str(password) + "<br /> Serveur : " + str(host) + "<br />"
         message = message + "<br /><b>Bon allez, c'est bon pour cette fois !</b> <br /> Dsl, pas grand chose de nouveau sur cette version finalement"
         self.errorWindow(message)
-            
-
-    def saveZone(self, zone):
-        with open(os.path.join(self.plugin_dir,"zone.txt"), "w") as fichier :
-            fichier.write(zone)
-            fichier.close()
             
     def siteGeoFoncier(self):
         desktopService = QDesktopServices()

@@ -7,14 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>854</width>
-    <height>200</height>
+    <height>215</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>684</width>
+    <height>195</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Mes dossiers GéoFoncier</string>
@@ -27,7 +33,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -39,10 +45,13 @@
           <x>20</x>
           <y>20</y>
           <width>211</width>
-          <height>101</height>
+          <height>105</height>
          </rect>
         </property>
         <layout class="QFormLayout" name="formLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_login">
            <property name="text">
@@ -56,7 +65,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string notr="true">clientge</string>
+            <string notr="true"/>
            </property>
           </widget>
          </item>
@@ -73,7 +82,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string notr="true">clientge</string>
+            <string notr="true"/>
            </property>
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
@@ -125,6 +134,20 @@
            </item>
           </widget>
          </item>
+         <item row="3" column="1">
+          <widget class="QCheckBox" name="checkBox_memoriser">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Mémoriser</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -133,7 +156,7 @@
           <x>250</x>
           <y>20</y>
           <width>191</width>
-          <height>101</height>
+          <height>81</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
