@@ -208,29 +208,37 @@ class GeoFoncierConsultationDetails:
                     self.dlg.ui.pushButton_couche_osm.setEnabled(True)
                 elif self.layers[i] == "googlesat":
                     self.dlg.ui.pushButton_couche_gsat.setEnabled(True)
+                    
+        #if self.dlg.ui.pushButton_couche_gsat.isEnabled() and self.dlg.ui.pushButton_couche_gsat.isEnabled():
+        #    self.s = QSettings()
+        #    self.s.setValue("/Projections/otfTransformEnabled", "false")    
 
     def addPointLayerDossier(self):
+        self.enableUseOfGlobalCrs()
         self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
         table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String), QgsField("ZIP", QVariant.String) ]
         self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
         self.dataProviderPointDossier.addAttributes(table_attributairePoint)
-        self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId))
         self.PointLayerDossier.loadSldStyle(":/resources/point")
         QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
         QObject.connect(self.PointLayerDossier, SIGNAL("layerDeleted()"), self.PointLayerDossierDeleted)
+        self.disableUseOfGlobalCrs()
     
     def PointLayerDossierDeleted(self):
         del self.PointLayerDossier
         
     def addPolygonLayerDossier(self):
+        self.enableUseOfGlobalCrs()
         self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
         table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("ZIP", QVariant.String) ]
         self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
         self.dataProviderPolygonDossier.addAttributes(table_attributairePolygons)
-        self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId))
         self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
         QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
         QObject.connect(self.PolygonLayerDossier, SIGNAL("layerDeleted()"), self.PolygonLayerDossierDeleted)
+        self.disableUseOfGlobalCrs()
         
     def PolygonLayerDossierDeleted(self):
         del self.PolygonLayerDossier
@@ -371,7 +379,7 @@ class GeoFoncierConsultationDetails:
         
         if not self.osmLayer.isValid():
             print "Layer failed to load!"
-        self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
         
         QgsMapLayerRegistry.instance().addMapLayer(self.osmLayer)
         self.layers[self.osmLayer.id()] = "osm"
@@ -385,40 +393,21 @@ class GeoFoncierConsultationDetails:
         
         if not self.googleLayer.isValid():
             print "Layer failed to load!"
-        self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.PostgisCrsId))
+        self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
         
         QgsMapLayerRegistry.instance().addMapLayer(self.googleLayer)
         self.layers[self.googleLayer.id()] = "googlesat"
         self.dlg.ui.pushButton_couche_gsat.setEnabled(False)
         self.disableUseOfGlobalCrs()
 
-    def degriseBoutonOSM(self):
-        print "signal !"
-        
-     #set new Layers to use the Project-CRS'  
     def enableUseOfGlobalCrs(self):  
         self.s = QSettings()
-        self.s.beginGroup("/PostgreSQL/connections")
-        bdds = self.s.allKeys()
-        print bdds
-        '''
-        for bd in self.s.allKeys():
-            import re
-            res = re.search("/database",bd)
-            if res:
-                database = self.s.value(bd)
-                print database
-            res = re.search("/password",bd)
-            if res:
-                password = self.s.value(bd)
-                print password
-        '''
-        self.oldValidation = self.s.value("/Projections/defaultBehaviour")
-        self.s.setValue( "/Projections/defaultBehaviour", "useProject" )  
+        self.oldDefaultProjection = self.s.value("/Projections/defaultBehaviour")
+        self.s.setValue( "/Projections/defaultBehaviour", "useProject")
+        self.s.setValue("/Projections/otfTransformAutoEnable", "true")
     
-    #enable old settings again' 
     def disableUseOfGlobalCrs(self):  
-        self.s.setValue( "/Projections/defaultBehaviour", self.oldValidation ) 
+        self.s.setValue( "/Projections/defaultBehaviour", self.oldDefaultProjection ) 
                 
     def run(self):
 
