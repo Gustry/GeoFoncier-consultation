@@ -446,7 +446,7 @@ class GeoFoncierConsultationDetails:
             #Lecture des logins
             self.s = QSettings()
             if self.s.value("/GeoFoncierConsultation/saveLogin") == "true":
-                print "lecture"
+                self.dlg.ui.pushButton_listerDossiers.setEnabled(True)
                 self.dlg.ui.lineEdit_login.setText(self.s.value("/GeoFoncierConsultation/login"))
                 self.dlg.ui.lineEdit_password.setText(self.s.value("/GeoFoncierConsultation/password"))
                 
@@ -457,7 +457,7 @@ class GeoFoncierConsultationDetails:
                 self.dlg.ui.checkBox_memoriser.setChecked(True)
                 self.saveLogin = True
             else:
-                print "pas de lecture"
+                self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
                 self.dlg.ui.lineEdit_login.setText("")
                 self.dlg.ui.lineEdit_password.setText("")
                 self.dlg.ui.checkBox_memoriser.setChecked(False)
@@ -483,7 +483,6 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.lineEdit_login.setDisabled(False)
             self.dlg.ui.lineEdit_password.setDisabled(False)
             self.dlg.ui.comboBox_zone.setDisabled(False)
-            self.dlg.ui.pushButton_listerDossiers.setDisabled(False)
             self.dlg.ui.label_listeDossiers.hide()
             self.dlg.ui.tableWidget_dossiers.hide()
             self.dlg.ui.tableWidget_dossiers.clearContents()
