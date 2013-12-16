@@ -5,7 +5,6 @@ Created on 28 nov. 2013
 @author: etienne
 '''
 
-
 class Document:
     """Classe Document"""
     
@@ -37,7 +36,15 @@ class Document:
         @rtype: string
         @return: nom de fichier
         """
-        return self.__identifiant+"."+self.__extension
+        return self.__identifiant
+    
+    def getExtension(self):
+        """
+        Accesseur de l'extension
+        @rtype: string
+        @return: extension
+        """
+        return self.__extension
     
     def getURL(self):
         """

@@ -6,7 +6,7 @@ Created on 11 nov. 2013
 '''
 import StringIO, csv
 import xml.etree.ElementTree as ET
-from exception import ErreurDossier, ErreurAPI
+from exception import ErreurDossierException, ErreurAPIException
 from document import Document
 from KML import KML
 
@@ -107,7 +107,7 @@ class Dossier:
         for child in root[0]:
             
             if child.tag == "id" and child.text != self.__id:
-                raise ErreurDossier, "Erreur dossier"
+                raise ErreurDossierException, "Erreur dossier"
             
             if child.tag == "geometrie_kml":
                 geometrie = ET.tostring(child)
@@ -123,4 +123,4 @@ class Dossier:
                     id = tab[5]
                     self.__document.append(Document(id,child[0].text,extension))
                 else:
-                    raise ErreurAPI, "Changement de l'API"
+                    raise ErreurAPIException, "Changement de l'API"

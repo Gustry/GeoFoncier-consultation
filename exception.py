@@ -6,11 +6,11 @@ Created on 12 nov. 2013
 class LoginException(Exception):
     pass
 
-class NoResult(Exception):
+class NoResultException(Exception):
     pass
 
-class ErreurDossier(Exception):
+class ErreurDossierException(Exception):
     pass
 
-class ErreurAPI(Exception):
+class ErreurAPIException(Exception):
     pass

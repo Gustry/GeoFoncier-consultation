@@ -27,11 +27,11 @@ class Saver(QDialog):
         self.password = password
         self.nameFile = nameFile
         
-        #urlparse(self.url_to_download).query
+        #Création des parametres
         self.parameters = parse_qs(urlparse(url).query)
         
         self.httpGetId = 0
-        self.httpRequestAborted = False
+        self.requeteHTTPannule = False
         self.statusLabel = QLabel(u'Enregistrement %s' % self.url_to_download)
         self.closeButton = QPushButton("Fermer")
         self.closeButton.setAutoDefault(False)
@@ -87,12 +87,12 @@ class Saver(QDialog):
             self.outFile = None
             return
 
+        #Création que la connexion HTTPS
         mode = QHttp.ConnectionModeHttps
-        port = url.port()
-        if port == -1:
-            port = 0
+        port = 0
         self.http.setHost(url.host(), mode, port)
-        self.httpRequestAborted = False
+        
+        self.requeteHTTPannule = False
         path = QUrl.toPercentEncoding(url.path(), "!$&'()*+,;=:@/")
         if path:
             path = str(path)
@@ -109,7 +109,7 @@ class Saver(QDialog):
 
     def cancelDownload(self):
         self.statusLabel.setText(u"Enregistrement annulé")
-        self.httpRequestAborted = True
+        self.requeteHTTPannule = True
         self.http.abort()
         self.close()
 
@@ -117,7 +117,7 @@ class Saver(QDialog):
         if requestId != self.httpGetId:
             return
 
-        if self.httpRequestAborted:
+        if self.requeteHTTPannule:
             if self.outFile is not None:
                 self.outFile.close()
                 self.outFile.remove()
@@ -141,13 +141,13 @@ class Saver(QDialog):
     def readResponseHeader(self, responseHeader):
         '''Slot pour analyser les headers HTTP'''
         if responseHeader.statusCode() not in (200, 300, 301, 302, 303, 307):
-            QMessageBox.information(self, 'Error','Download failed: %s.' % responseHeader.reasonPhrase())
-            self.httpRequestAborted = True
+            QMessageBox.information(self, 'Erreur','Le téléchargement a échoué : %s.' % responseHeader.reasonPhrase())
+            self.requeteHTTPannule = True
             self.http.abort()
 
     def updateDataReadProgress(self, bytesRead, totalBytes):
         '''Slot pour mettre à jour la barre de progression'''
-        if self.httpRequestAborted:
+        if self.requeteHTTPannule:
             return
         self.progressBar.setMaximum(totalBytes)
         self.progressBar.setValue(bytesRead)

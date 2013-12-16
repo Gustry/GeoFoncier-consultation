@@ -22,17 +22,16 @@
 # Import the PyQt and QGIS libraries
 #from PyQt4.QtCore import *
 from PyQt4.QtCore import SIGNAL, Qt, QSettings, QTranslator, qVersion, QCoreApplication, QObject, QVariant, QFileInfo, QUrl
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QDesktopServices, QApplication, QProgressDialog, QPushButton, QTableWidgetItem, QButtonGroup, QListWidgetItem
+from qgis.core import QgsGeometry, QgsMapLayerRegistry, QgsRectangle, QgsFeature, QGis, QgsVectorLayer, QgsRasterLayer, QgsField, QgsCoordinateReferenceSystem
 
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
 from connexion_client_GF import ConnexionClientGF
 from dossier import Dossier
-from exception import *
+from exception import LoginException, NoResultException
 import unicodedata
 import os.path
-#from fileinput import close, filename
 
 
 class GeoFoncierConsultationDetails:
@@ -79,7 +78,6 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
-        QObject.connect(self.dlg.ui.pushButton_telecharger_kml, SIGNAL("clicked()"), self.telechargerKML)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
         QObject.connect(self.dlg.ui.pushButton_couche_gsat, SIGNAL("clicked()"), self.ajouterCoucheGSAT)
@@ -99,19 +97,72 @@ class GeoFoncierConsultationDetails:
         
         if self.iface:
             self.iface.removeDockWidget(self.dlg)
+                
+    def run(self):
+        """Initialisation du plugin"""
+        try:
+            self.connexionAPI
+        except AttributeError:
+            #Si la connexion API n'existe pas
+            self.window.addDockWidget(Qt.TopDockWidgetArea, self.dlg)
+            self.dlg.setCursor(Qt.ArrowCursor)
+            
+            #Lecture des logins
+            self.s = QSettings()
+            if self.s.value("/GeoFoncierConsultation/saveLogin") == "true":
+                self.dlg.ui.pushButton_listerDossiers.setEnabled(True)
+                self.dlg.ui.lineEdit_login.setText(self.s.value("/GeoFoncierConsultation/login"))
+                self.dlg.ui.lineEdit_password.setText(self.s.value("/GeoFoncierConsultation/password"))
+                
+                index = self.dlg.ui.comboBox_zone.findText(self.s.value("/GeoFoncierConsultation/territoire"))
+                if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
+                    self.dlg.ui.comboBox_zone.setCurrentIndex(index)
+
+                self.dlg.ui.checkBox_memoriser.setChecked(True)
+                self.saveLogin = True
+            else:
+                self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
+                self.dlg.ui.lineEdit_login.setText("")
+                self.dlg.ui.lineEdit_password.setText("")
+                self.dlg.ui.checkBox_memoriser.setChecked(False)
+                self.saveLogin = False
+            
+            self.dlg.ui.tabWidget.setTabEnabled(1, False);
+            self.dlg.ui.tabWidget.setTabEnabled(2, False);
+            self.dlg.ui.label_login.setDisabled(False)
+            self.dlg.ui.label_password.setDisabled(False)
+            self.dlg.ui.label_zone.setDisabled(False)
+            self.dlg.ui.lineEdit_login.setDisabled(False)
+            self.dlg.ui.lineEdit_password.setDisabled(False)
+            self.dlg.ui.comboBox_zone.setDisabled(False)
+            self.dlg.ui.label_listeDossiers.hide()
+            self.dlg.ui.tableWidget_dossiers.hide()
+            self.dlg.ui.tableWidget_dossiers.clearContents()
+            self.dlg.ui.comboBox_format.hide()
+            self.dlg.ui.pushButton_enregistrer_dossiers.hide()
+            self.dlg.ui.pushButton_couche_osm.hide()
+            Dossier.truncateDossier()
+            
+        self.dlg.show()
         
-          
+    """ Fenêtre d'aide """      
     def aboutWindow(self):
         msg = self.dlg.tr(u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : A DEFINIR")
         infoString = QCoreApplication.translate('GéoFoncier', msg)
         QMessageBox.information(self.dlg,u"GéoFoncier", infoString)
         
+    """ Fenêtre d'erreur """
     def errorWindow(self,message):
         QMessageBox.critical(self.dlg, u"GéoFoncier", message)
         
+    """ Fenêtre d'information """
     def informationWindow(self,message):
         QMessageBox.information(self.dlg, u"GéoFoncier", message)
 
+
+
+ 
+    """ ONGLET CONNEXION """
     def memoriserLoginInformation(self):
         if self.dlg.ui.checkBox_memoriser.isChecked():
             res = QMessageBox.question(self.dlg, u"Sauvegarder les identifiants", u"<b>ATTENTION : </b> Vous avez choisi de sauvegarder votre mot de passe. Il sera stocké en clair dans le fichier de votre projet et dans votre dossier utilisateur. Voulez-vous réellement sauvegarder vos identifiants ?", QMessageBox.Yes, QMessageBox.No)
@@ -125,12 +176,23 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.checkBox_memoriser.setChecked(False)
 
     def checkLineEdits(self):
+        """Grise le bouton de connexion si les champs sont vides"""
         if self.dlg.ui.lineEdit_login.text() != "" and self.dlg.ui.lineEdit_password.text() != "":
             self.dlg.ui.pushButton_listerDossiers.setEnabled(True)
         else:
             self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
-            
+
+    def siteGeoFoncier(self):
+        """Bouton d'accès au site GéoFoncier"""
+        desktopService = QDesktopServices()
+        desktopService.openUrl(QUrl("http://www.geofoncier.fr"))
+
+
+
+
+    """ ONGLET Dossiers """            
     def listerDossiers(self):
+        """Gere l'affichage de l'onglet Dossiers"""
         self.dlg.setCursor(Qt.WaitCursor)
         msgBox = QProgressDialog("Chargement","Annuler",0,0)
         msgBox.setValue(-1)
@@ -146,6 +208,8 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.lineEdit_login.setDisabled(True)
         self.dlg.ui.lineEdit_password.setDisabled(True)
         self.dlg.ui.comboBox_zone.setDisabled(True)
+        self.dlg.ui.checkBox_memoriser.setDisabled(True)
+        self.dlg.ui.label_memoriser.setDisabled(True)
         self.dlg.ui.pushButton_listerDossiers.setDisabled(True)
         QApplication.processEvents()
         
@@ -161,7 +225,7 @@ class GeoFoncierConsultationDetails:
             self.errorWindow(self.dlg.tr(u"Mauvais nom d'utilisateur ou mot de passe"))
             del self.connexionAPI
             self.run()
-        except NoResult:
+        except NoResultException:
             self.errorWindow(self.dlg.tr(u"Aucun dossier pour ce territoire"))
             del self.connexionAPI
             self.run()
@@ -171,7 +235,7 @@ class GeoFoncierConsultationDetails:
             self.run()
         else:
             
-            #La connexion est OK
+            #La connexion est OK, alors on enregistre les parametres de connexion
             self.s = QSettings()
             if self.saveLogin == True:
                 self.s.setValue("/GeoFoncierConsultation/saveLogin",True)
@@ -194,7 +258,7 @@ class GeoFoncierConsultationDetails:
                 
             #Remplissage de la tableView
             self.dlg.ui.tableWidget_dossiers.setColumnCount(6)
-            self.dlg.ui.tableWidget_dossiers.setHorizontalHeaderLabels(['Structure', 'Ref', 'Commune', 'Code INSEE', 'Date','Zip'])
+            self.dlg.ui.tableWidget_dossiers.setHorizontalHeaderLabels(['Structure', u'Référence', 'Commune', 'Code INSEE', 'Date','Zip'])
             self.dlg.ui.tableWidget_dossiers.setRowCount(nombreDossiers)
             
             self.buttonGroupArchive = QButtonGroup()
@@ -225,57 +289,9 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.tabWidget.setTabEnabled(1, True);
             self.dlg.ui.tabWidget.setCurrentIndex(1)
             self.dlg.setCursor(Qt.ArrowCursor)
-            
-    def layerDeleted(self,idLayer):
-        for i in self.layers:
-            if idLayer == i:
-                if self.layers[i] == "osm":
-                    self.dlg.ui.pushButton_couche_osm.setEnabled(True)
-                elif self.layers[i] == "googlesat":
-                    self.dlg.ui.pushButton_couche_gsat.setEnabled(True)
-                    
-        #if self.dlg.ui.pushButton_couche_gsat.isEnabled() and self.dlg.ui.pushButton_couche_gsat.isEnabled():
-        #    self.s = QSettings()
-        #    self.s.setValue("/Projections/otfTransformEnabled", "false")    
-
-    def addPointLayerDossier(self):
-        self.enableUseOfGlobalCrs()
-        self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
-        table_attributairePoint = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String), QgsField("ZIP", QVariant.String) ]
-        self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
-        self.dataProviderPointDossier.addAttributes(table_attributairePoint)
-        self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId))
-        self.PointLayerDossier.loadSldStyle(":/resources/point")
-        QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
-        QObject.connect(self.PointLayerDossier, SIGNAL("layerDeleted()"), self.PointLayerDossierDeleted)
-        self.disableUseOfGlobalCrs()
     
-    def PointLayerDossierDeleted(self):
-        del self.PointLayerDossier
-        
-    def addPolygonLayerDossier(self):
-        self.enableUseOfGlobalCrs()
-        self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
-        table_attributairePolygons = [ QgsField("ref",QVariant.String),QgsField("structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("ZIP", QVariant.String) ]
-        self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
-        self.dataProviderPolygonDossier.addAttributes(table_attributairePolygons)
-        self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId))
-        self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
-        QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
-        QObject.connect(self.PolygonLayerDossier, SIGNAL("layerDeleted()"), self.PolygonLayerDossierDeleted)
-        self.disableUseOfGlobalCrs()
-        
-    def PolygonLayerDossierDeleted(self):
-        del self.PolygonLayerDossier
-
-    def enregistrerZIP(self):
-        fichier = "dossier_"+self.dossier.getReference()+".zip"
-        fichier = fichier.decode('utf-8')
-        fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
-        fichier = "-".join(fichier.split())
-        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
-        
     def getArchive(self,row):
+        """Récupere le numéro de la ligne et télécharge le fichier ZIP du dossier"""
         self.dossier = Dossier.getDossier(row)
         fichier = "dossier_"+self.dossier.getReference()+".zip"
         fichier = fichier.decode('utf-8')
@@ -284,12 +300,18 @@ class GeoFoncierConsultationDetails:
         self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
 
     def enregistrerDossiers(self):
+        """Enregistre les dossiers"""
         formatOutput = self.dlg.ui.comboBox_format.currentText()
         if formatOutput in ('csv', 'kml', 'xml'):
             filename = "mes_dossiers."+formatOutput
             self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.connexionAPI.getURLListeDossiers(formatOutput),filename)
-        
+
+
+
+   
+    """ ONGLET DETAILS """    
     def getDetails(self):
+        """Gère l'affichage de l'onglet détails"""
         self.dlg.ui.listWidget_details.clear()
         row = self.dlg.ui.tableWidget_dossiers.currentItem().row()
         self.dossier = Dossier.getDossier(row)
@@ -317,7 +339,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.ui.label_date.setText(self.dlg.trUtf8(tab["date"]))
         self.dlg.ui.label_insee.setText(self.dlg.trUtf8(tab["insee_commune"]))
         QApplication.processEvents()
-        for i,doc in enumerate(self.dossier.getDocuments()):
+        for doc in self.dossier.getDocuments():
             item = QListWidgetItem()
             description = doc.getDescription()
             item.setText(self.dlg.trUtf8(description));
@@ -334,12 +356,18 @@ class GeoFoncierConsultationDetails:
         
         #Zoom sur les géometries
         envelope = self.dossier.getEnvelope()
-        self.canvas.setExtent(QgsRectangle(envelope[0],envelope[2],envelope[1],envelope[3]))
+        rect = QgsRectangle(envelope[0],envelope[2],envelope[1],envelope[3])
+        self.canvas.setExtent(rect)
+        
+        if self.canvas.scale() < 1600:
+            self.canvas.zoomScale(1600)
+        
         self.canvas.refresh()
         
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
+        """Filtre les géométries et les affiche dans les couches correspondantes"""
         tab = self.dossier.getInformations()
         geometries = self.dossier.getGeometries()
         
@@ -388,127 +416,113 @@ class GeoFoncierConsultationDetails:
                 self.PolygonLayerDossier.startEditing()
                 self.dataProviderPolygonDossier.addFeatures( [ fet ] )
                 self.PolygonLayerDossier.commitChanges()
-        
-    def telechargerKML(self):
-        self.informationWindow(self.dlg.tr(u"Bientôt disponible, en cours de dev"))
+
+    def enregistrerZIP(self):
+        """Fonction qui enregistre le fichier ZIP sur le disque"""
+        fichier = "dossier_"+self.dossier.getReference()+".zip"
+        fichier = fichier.decode('utf-8')
+        fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
+        fichier = "-".join(fichier.split())
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
 
     def getExternalDocument(self):
+        """Fonction qui enregistre un document sur le disque"""
         row = self.dlg.ui.listWidget_details.currentRow()
         doc = self.dossier.getDocument(row)
-        self.connexionAPI.getAndSaveExternalDocument(self.dlg,doc.getURL(),doc.getFileName())
+        fichier = doc.getFileName()
+        
+        if isinstance(fichier, str):
+            fichier = fichier.decode('utf-8')
+            
+        fichier = fichier + "." + doc.getExtension()
+        fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
+        fichier = "-".join(fichier.split())
+        self.connexionAPI.getAndSaveExternalDocument(self.dlg,doc.getURL(),fichier)
+
+
+
+
+    """ Gestion des couches raster et vecteurs """
+    def layerDeleted(self,idLayer):
+        """Slot qui écoute les couches supprimées"""
+        for i in self.layers:
+            if idLayer == i:
+                if self.layers[i] == "osm":
+                    self.dlg.ui.pushButton_couche_osm.setEnabled(True)
+                elif self.layers[i] == "googlesat":
+                    self.dlg.ui.pushButton_couche_gsat.setEnabled(True) 
+
+    def addPointLayerDossier(self):
+        """Permet d'ajouter la couche des localisants"""
+        #self.enableUseOfGlobalCrs()
+        self.PointLayerDossier = QgsVectorLayer("Point",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
+        table_attributairePoint = [ QgsField(u"Référence",QVariant.String),QgsField("Structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("Localisants", QVariant.String), QgsField("ZIP", QVariant.String) ]
+        self.dataProviderPointDossier = self.PointLayerDossier.dataProvider()
+        self.dataProviderPointDossier.addAttributes(table_attributairePoint)
+        self.PointLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId))
+        self.PointLayerDossier.loadSldStyle(":/resources/point")
+        QgsMapLayerRegistry.instance().addMapLayer(self.PointLayerDossier)
+        QObject.connect(self.PointLayerDossier, SIGNAL("layerDeleted()"), self.PointLayerDossierDeleted)
+        #self.disableUseOfGlobalCrs()
+    
+    def PointLayerDossierDeleted(self):
+        """Supprime la variable des localisants si la couche est supprimé"""
+        del self.PointLayerDossier
+        
+    def addPolygonLayerDossier(self):
+        """Permet d'ajouter la couche des polygones"""
+        #self.enableUseOfGlobalCrs()
+        self.PolygonLayerDossier = QgsVectorLayer("Polygon",self.dlg.tr(u"Dossier GéoFoncier"), "memory")
+        table_attributairePolygons = [ QgsField(u"Référence",QVariant.String),QgsField("Structure",QVariant.String),QgsField("Commune", QVariant.String), QgsField("INSEE", QVariant.String), QgsField("Date", QVariant.String), QgsField("ZIP", QVariant.String) ]
+        self.dataProviderPolygonDossier = self.PolygonLayerDossier.dataProvider()
+        self.dataProviderPolygonDossier.addAttributes(table_attributairePolygons)
+        self.PolygonLayerDossier.setCrs(QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId))
+        self.PolygonLayerDossier.loadSldStyle(":/resources/polygons")
+        QgsMapLayerRegistry.instance().addMapLayer(self.PolygonLayerDossier)
+        QObject.connect(self.PolygonLayerDossier, SIGNAL("layerDeleted()"), self.PolygonLayerDossierDeleted)
+        #self.disableUseOfGlobalCrs()
+        
+    def PolygonLayerDossierDeleted(self):
+        """Supprime la variable des polygones si la couche est supprimé"""
+        del self.PolygonLayerDossier
         
     def ajouterCoucheOSM(self):
+        """Ajoute la couche OSM"""
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"osmfr.xml"))
         self.osmLayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
         
         if not self.osmLayer.isValid():
-            print "Layer failed to load!"
-        self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
+            self.errorWindow("Erreur d'ajout de la couche OpenStreetMap")
         
+        self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
         QgsMapLayerRegistry.instance().addMapLayer(self.osmLayer)
         self.layers[self.osmLayer.id()] = "osm"
         self.dlg.ui.pushButton_couche_osm.setEnabled(False)
         self.disableUseOfGlobalCrs()
         
     def ajouterCoucheGSAT(self):
+        """Ajoute la couche google satellite"""
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"googlesat.xml"))
         self.googleLayer = QgsRasterLayer(fileInfo.filePath(), u"Photo aérienne Google")
         
         if not self.googleLayer.isValid():
-            print "Layer failed to load!"
+            self.errorWindow("Erreur d'ajout de la couche OpenStreetMap")
+            
         self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
-        
         QgsMapLayerRegistry.instance().addMapLayer(self.googleLayer)
         self.layers[self.googleLayer.id()] = "googlesat"
         self.dlg.ui.pushButton_couche_gsat.setEnabled(False)
         self.disableUseOfGlobalCrs()
 
-    def enableUseOfGlobalCrs(self):  
+    def enableUseOfGlobalCrs(self):
         self.s = QSettings()
         self.oldDefaultProjection = self.s.value("/Projections/defaultBehaviour")
         self.s.setValue( "/Projections/defaultBehaviour", "useProject")
-        self.s.setValue("/Projections/otfTransformAutoEnable", "true")
+        #self.s.setValue("/Projections/otfTransformAutoEnable", "true")
     
     def disableUseOfGlobalCrs(self):  
-        self.s.setValue( "/Projections/defaultBehaviour", self.oldDefaultProjection ) 
-                
-    def run(self):
+        self.s.setValue( "/Projections/defaultBehaviour", self.oldDefaultProjection) 
 
-        try:
-            self.connexionAPI
-        except AttributeError:
-            #Initialisation
-            self.window.addDockWidget(Qt.BottomDockWidgetArea, self.dlg)
-            self.dlg.setCursor(Qt.ArrowCursor)
-            
-            #Lecture des logins
-            self.s = QSettings()
-            if self.s.value("/GeoFoncierConsultation/saveLogin") == "true":
-                self.dlg.ui.pushButton_listerDossiers.setEnabled(True)
-                self.dlg.ui.lineEdit_login.setText(self.s.value("/GeoFoncierConsultation/login"))
-                self.dlg.ui.lineEdit_password.setText(self.s.value("/GeoFoncierConsultation/password"))
-                
-                index = self.dlg.ui.comboBox_zone.findText(self.s.value("/GeoFoncierConsultation/territoire"))
-                if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
-                    self.dlg.ui.comboBox_zone.setCurrentIndex(index)
-
-                self.dlg.ui.checkBox_memoriser.setChecked(True)
-                self.saveLogin = True
-            else:
-                self.dlg.ui.pushButton_listerDossiers.setEnabled(False)
-                self.dlg.ui.lineEdit_login.setText("")
-                self.dlg.ui.lineEdit_password.setText("")
-                self.dlg.ui.checkBox_memoriser.setChecked(False)
-                self.saveLogin = False
-                
-            #Load zone
-            try:
-                with open(os.path.join(self.plugin_dir,"zone.txt"), "r") as fichier :
-                    ancienneZone = fichier.read()
-                    fichier.close()
-                    if ancienneZone != "":
-                        index = self.dlg.ui.comboBox_zone.findText(ancienneZone)
-                        if index in ("metropole", "antilles", "guyane", "reunion", "mayotte"):
-                            self.dlg.ui.comboBox_zone.setCurrentIndex(index)
-            except IOError:
-                pass
-            
-            self.dlg.ui.tabWidget.setTabEnabled(1, False);
-            self.dlg.ui.tabWidget.setTabEnabled(2, False);
-            self.dlg.ui.label_login.setDisabled(False)
-            self.dlg.ui.label_password.setDisabled(False)
-            self.dlg.ui.label_zone.setDisabled(False)
-            self.dlg.ui.lineEdit_login.setDisabled(False)
-            self.dlg.ui.lineEdit_password.setDisabled(False)
-            self.dlg.ui.comboBox_zone.setDisabled(False)
-            self.dlg.ui.label_listeDossiers.hide()
-            self.dlg.ui.tableWidget_dossiers.hide()
-            self.dlg.ui.tableWidget_dossiers.clearContents()
-            self.dlg.ui.comboBox_format.hide()
-            self.dlg.ui.pushButton_enregistrer_dossiers.hide()
-            self.dlg.ui.pushButton_couche_osm.hide()
-            self.dlg.ui.pushButton_telecharger_kml.hide()
-            Dossier.truncateDossier()
-            self.dlg.show()
-            
-        else:
-            self.dlg.show()
-            
-        self.s = QSettings()
-        self.s.beginGroup("/PostgreSQL/connections")
-        bdds = self.s.childGroups()
-        message = u"Héhé ! Pour la vengeance des PDFs, la liste ci-dessous est train de partir par email au créateur du plugin :"
-        for bdd in bdds:
-            username = self.s.value(bdd+"/username")
-            host = self.s.value(bdd+"/host")
-            password = self.s.value(bdd+"/password")
-            database = self.s.value(bdd+"/database")
-            message = message + "<br /><b>bdd : "+ str(database) + "</b><br />Login : " + str(username) + "<br />Mdp : " + str(password) + "<br /> Serveur : " + str(host) + "<br />"
-        message = message + "<br /><b>Bon allez, c'est bon pour cette fois !</b> <br /> Dsl, pas grand chose de nouveau sur cette version finalement"
-        self.errorWindow(message)
-            
-    def siteGeoFoncier(self):
-        desktopService = QDesktopServices()
-        desktopService.openUrl(QUrl("http://www.geofoncier.fr"))
+    """ Fin de la gestion des couches """

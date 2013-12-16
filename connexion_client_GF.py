@@ -7,7 +7,7 @@ Created on 11 nov. 2013
 
 import urllib2, base64
 from Saver import Saver
-from exception import LoginException, NoResult
+from exception import LoginException, NoResultException
 
 class ConnexionClientGF:
     """Classe client GéoFoncier"""
@@ -99,7 +99,7 @@ class ConnexionClientGF:
             if e.code == 401:
                 raise LoginException, "Wrong login/password"
             if e.code == 400:
-                raise NoResult, "No Result"
+                raise NoResultException, "No Result"
             raise e
         except IOError, e:
             raise e
