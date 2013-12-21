@@ -9,6 +9,7 @@ Version disponible : anglais et français
 
 * Installation manuel : https://github.com/Gustry/GeoFoncier-consultation/archive/master.zip
  * Décompressez l'archive et déplacer le dossier dans votre répertoire des plugins python de QGIS.
+ * Démarrer QGIS puis Menu Extension -> Gestionnaire d'extension -> Activez le plugin "Mes dossiers GéoFoncier"
 
 * Installation via un dépôt : http://qgis.trimaille.eu/
  * Ajoutez ce dépôt via le gestionnaire d'extension de QGIS. Activez les plugins expérimentaux et rechargez la listes des plugins. Il se nomme "Mes dossiers GéoFoncier".
@@ -16,6 +17,7 @@ Version disponible : anglais et français
 
 # Utilisation
 * Il est nécessaire d'avoir un couple nom d'utilisateur / mot de passe de client GéoFoncier.
+ * Pour les tests : clientge / clientge comme nom d'utilisateur et mot de passe.
 * Il possible d'ajouter une couche cartographique et une couche aérienne.
 
 # Le projet :
