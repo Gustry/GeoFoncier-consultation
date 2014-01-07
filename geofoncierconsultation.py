@@ -14,7 +14,7 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
@@ -135,6 +135,8 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.lineEdit_login.setDisabled(False)
             self.dlg.ui.lineEdit_password.setDisabled(False)
             self.dlg.ui.comboBox_zone.setDisabled(False)
+            self.dlg.ui.checkBox_memoriser.setDisabled(False)
+            self.dlg.ui.label_memoriser.setDisabled(False)
             self.dlg.ui.label_listeDossiers.hide()
             self.dlg.ui.tableWidget_dossiers.hide()
             self.dlg.ui.tableWidget_dossiers.clearContents()
@@ -147,7 +149,7 @@ class GeoFoncierConsultationDetails:
         
     """ Fenêtre d'aide """      
     def aboutWindow(self):
-        msg = self.dlg.tr(u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Auteur: Etienne Trimaille<br />Mail: <a href=\"mailto:etienne@trimaille.eu\">etienne@trimaille.eu</a>\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : A DEFINIR")
+        msg = self.dlg.tr(u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Mail: <a href=\"mailto:admin@geofoncier.fr\">admin@geofoncier.fr</a><br />Auteur: Etienne Trimaille\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : <a href='http://www.gnu.org/licenses/quick-guide-gplv3.fr.html'>GNU GPL v3</a>")
         infoString = QCoreApplication.translate('GéoFoncier', msg)
         QMessageBox.information(self.dlg,u"GéoFoncier", infoString)
         
@@ -291,7 +293,7 @@ class GeoFoncierConsultationDetails:
             self.dlg.setCursor(Qt.ArrowCursor)
     
     def getArchive(self,row):
-        """Récupere le numéro de la ligne et télécharge le fichier ZIP du dossier"""
+        """Recupere le numero de la ligne et telecharge le fichier ZIP du dossier"""
         self.dossier = Dossier.getDossier(row)
         fichier = "dossier_"+self.dossier.getReference()+".zip"
         fichier = fichier.decode('utf-8')
@@ -311,7 +313,7 @@ class GeoFoncierConsultationDetails:
    
     """ ONGLET DETAILS """    
     def getDetails(self):
-        """Gère l'affichage de l'onglet détails"""
+        """Gere l'affichage de l'onglet details"""
         self.dlg.ui.listWidget_details.clear()
         row = self.dlg.ui.tableWidget_dossiers.currentItem().row()
         self.dossier = Dossier.getDossier(row)
@@ -367,7 +369,7 @@ class GeoFoncierConsultationDetails:
         self.dlg.setCursor(Qt.ArrowCursor)
         
     def voirCoucheQGIS(self):
-        """Filtre les géométries et les affiche dans les couches correspondantes"""
+        """Filtre les geometries et les affiche dans les couches correspondantes"""
         tab = self.dossier.getInformations()
         geometries = self.dossier.getGeometries()
         
@@ -444,7 +446,7 @@ class GeoFoncierConsultationDetails:
 
     """ Gestion des couches raster et vecteurs """
     def layerDeleted(self,idLayer):
-        """Slot qui écoute les couches supprimées"""
+        """Slot qui ecoute les couches supprimees"""
         for i in self.layers:
             if idLayer == i:
                 if self.layers[i] == "osm":
@@ -485,9 +487,17 @@ class GeoFoncierConsultationDetails:
     def PolygonLayerDossierDeleted(self):
         """Supprime la variable des polygones si la couche est supprimé"""
         del self.PolygonLayerDossier
-        
+    
+    def informationWindowOrdreCouches(self):
+        try:
+            self.informationFenetreOrdreCoucheDejaVu
+        except AttributeError:
+            self.informationWindow(self.dlg.tr(u"Vous pouvez modifier l'ordre des couches en effectuant un glisser/déposer des couches OpenStreetMap et Google en les déplacant vers le bas dans la fenêtre de gauche."))
+            self.informationFenetreOrdreCoucheDejaVu = True
+            
     def ajouterCoucheOSM(self):
         """Ajoute la couche OSM"""
+        self.informationWindowOrdreCouches()
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"osmfr.xml"))
         self.osmLayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
@@ -503,6 +513,7 @@ class GeoFoncierConsultationDetails:
         
     def ajouterCoucheGSAT(self):
         """Ajoute la couche google satellite"""
+        self.informationWindowOrdreCouches()
         self.enableUseOfGlobalCrs()
         fileInfo = QFileInfo(os.path.join(self.resources_dir,"googlesat.xml"))
         self.googleLayer = QgsRasterLayer(fileInfo.filePath(), u"Photo aérienne Google")
