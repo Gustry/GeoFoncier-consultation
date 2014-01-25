@@ -36,7 +36,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -308,9 +308,9 @@
        <widget class="QListWidget" name="listWidget_details">
         <property name="geometry">
          <rect>
-          <x>450</x>
+          <x>490</x>
           <y>30</y>
-          <width>351</width>
+          <width>311</width>
           <height>101</height>
          </rect>
         </property>
@@ -318,10 +318,10 @@
        <widget class="QLabel" name="label">
         <property name="geometry">
          <rect>
-          <x>460</x>
+          <x>500</x>
           <y>10</y>
           <width>201</width>
-          <height>16</height>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
@@ -331,9 +331,9 @@
        <widget class="QWidget" name="verticalLayoutWidget">
         <property name="geometry">
          <rect>
-          <x>260</x>
+          <x>240</x>
           <y>10</y>
-          <width>180</width>
+          <width>245</width>
           <height>121</height>
          </rect>
         </property>
@@ -369,6 +369,17 @@
            <property name="icon">
             <iconset resource="resources_rc.qrc">
              <normaloff>:/resources/zip</normaloff>:/resources/zip</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_rechargerDossier">
+           <property name="text">
+            <string>Recharger (documents,géométries)</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources_rc.qrc">
+             <normaloff>:/resources/reload</normaloff>:/resources/reload</iconset>
            </property>
           </widget>
          </item>

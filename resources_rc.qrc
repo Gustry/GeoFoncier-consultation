@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/resources">
+    <file alias="reload">resources/refresh.png</file>
     <file alias="map">resources/map.png</file>
     <file alias="zip">resources/zip.png</file>
     <file alias="icon_png">resources/icon.png</file>

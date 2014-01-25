@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Sat Jan 25 12:24:24 2014
+# Created: Sat Jan 25 14:29:24 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -154,13 +154,13 @@ class Ui_GeoFoncierConsultation(object):
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
         self.listWidget_details = QtGui.QListWidget(self.tab_2)
-        self.listWidget_details.setGeometry(QtCore.QRect(450, 30, 351, 101))
+        self.listWidget_details.setGeometry(QtCore.QRect(490, 30, 311, 101))
         self.listWidget_details.setObjectName(_fromUtf8("listWidget_details"))
         self.label = QtGui.QLabel(self.tab_2)
-        self.label.setGeometry(QtCore.QRect(460, 10, 201, 16))
+        self.label.setGeometry(QtCore.QRect(500, 10, 201, 20))
         self.label.setObjectName(_fromUtf8("label"))
         self.verticalLayoutWidget = QtGui.QWidget(self.tab_2)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(260, 10, 180, 121))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(240, 10, 245, 121))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout_2.setMargin(0)
@@ -183,6 +183,12 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_ZIP.setIcon(icon2)
         self.pushButton_ZIP.setObjectName(_fromUtf8("pushButton_ZIP"))
         self.verticalLayout_2.addWidget(self.pushButton_ZIP)
+        self.pushButton_rechargerDossier = QtGui.QPushButton(self.verticalLayoutWidget)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/reload")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_rechargerDossier.setIcon(icon3)
+        self.pushButton_rechargerDossier.setObjectName(_fromUtf8("pushButton_rechargerDossier"))
+        self.verticalLayout_2.addWidget(self.pushButton_rechargerDossier)
         self.formLayoutWidget_2 = QtGui.QWidget(self.tab_2)
         self.formLayoutWidget_2.setGeometry(QtCore.QRect(0, 10, 231, 121))
         self.formLayoutWidget_2.setObjectName(_fromUtf8("formLayoutWidget_2"))
@@ -235,7 +241,7 @@ class Ui_GeoFoncierConsultation(object):
         GeoFoncierConsultation.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -257,6 +263,7 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_couche_osm.setText(_translate("GeoFoncierConsultation", "Couche cartographique", None))
         self.pushButton_couche_gsat.setText(_translate("GeoFoncierConsultation", "Photo aérienne Google", None))
         self.pushButton_ZIP.setText(_translate("GeoFoncierConsultation", "Archive ZIP", None))
+        self.pushButton_rechargerDossier.setText(_translate("GeoFoncierConsultation", "Recharger (documents,géométries)", None))
         self.label_3.setText(_translate("GeoFoncierConsultation", "Référence :", None))
         self.label_reference.setText(_translate("GeoFoncierConsultation", "TextLabel", None))
         self.label_4.setText(_translate("GeoFoncierConsultation", "Structure :", None))

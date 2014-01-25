@@ -115,6 +115,11 @@ class Dossier:
     def getDocuments(self):
         return self.__document
     
+    def deleteDetails(self):
+        self.__document = list()
+        self.__geometrie_kml = None
+        self.__envelope = None
+    
     def loadDetails(self,data):
         """Méthode qui permet de rajouter des informations à un dossier à partir du XML"""
         tree = ET.parse(StringIO.StringIO(data))

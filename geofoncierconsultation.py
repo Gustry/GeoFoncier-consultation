@@ -83,6 +83,7 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
+        QObject.connect(self.dlg.ui.pushButton_rechargerDossier, SIGNAL("clicked()"), self.rechargerDossier)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
         QObject.connect(self.dlg.ui.pushButton_couche_gsat, SIGNAL("clicked()"), self.ajouterCoucheGSAT)
         QObject.connect(self.dlg.ui.pushButton_site_geofoncier, SIGNAL("clicked()"), self.siteGeoFoncier)
@@ -372,6 +373,38 @@ class GeoFoncierConsultationDetails:
         self.canvas.refresh()
         
         self.dlg.setCursor(Qt.ArrowCursor)
+    
+    def rechargerDossier(self):
+        """Recharger un dossier"""
+        dossierZip = self.connexionAPI.getURL(self.dossier.getURLArchiveZIP())
+        
+        """Suppression des géométries ponctuelles"""
+        zipField = self.PointLayerDossier.fieldNameIndex('ZIP')
+        features = self.PointLayerDossier.getFeatures()
+        for feature in features:
+            featureZip = feature.attributes()[zipField]
+            if str(featureZip) == str(dossierZip):
+                self.PointLayerDossier.startEditing()
+                self.PointLayerDossier.deleteFeature(feature.id())
+                self.PointLayerDossier.commitChanges()
+        
+        """Suppression des géométries surfaciques"""
+        zipField = self.PolygonLayerDossier.fieldNameIndex('ZIP')
+        features = self.PolygonLayerDossier.getFeatures()
+        for feature in features:
+            featureZip = feature.attributes()[zipField]
+            if str(featureZip) == str(dossierZip):
+                self.PolygonLayerDossier.startEditing()
+                self.PolygonLayerDossier.deleteFeature(feature.id())
+                self.PolygonLayerDossier.commitChanges()    
+            
+        self.canvas.refresh()
+        
+        """Suppression des documents"""
+        self.dossier.deleteDetails()
+        
+        """Rechargement du dossier"""
+        self.getDetails()
         
     def voirCoucheQGIS(self):
         """Filtre les geometries et les affiche dans les couches correspondantes"""
