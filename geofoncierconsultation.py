@@ -82,6 +82,7 @@ class GeoFoncierConsultationDetails:
         QObject.connect(self.dlg.ui.pushButton_help, SIGNAL("clicked()"), self.aboutWindow)
         QObject.connect(self.dlg.ui.pushButton_listerDossiers, SIGNAL("clicked()"), self.listerDossiers)
         QObject.connect(self.dlg.ui.pushButton_enregistrer_dossiers, SIGNAL("clicked()"), self.enregistrerDossiers)
+        QObject.connect(self.dlg.ui.pushButton_rechargerDossiers, SIGNAL("clicked()"), self.rechargerDossiers)
         QObject.connect(self.dlg.ui.pushButton_ZIP, SIGNAL("clicked()"), self.enregistrerZIP)
         QObject.connect(self.dlg.ui.pushButton_rechargerDossier, SIGNAL("clicked()"), self.rechargerDossier)
         QObject.connect(self.dlg.ui.pushButton_couche_osm, SIGNAL("clicked()"), self.ajouterCoucheOSM)
@@ -290,6 +291,34 @@ class GeoFoncierConsultationDetails:
             self.dlg.ui.tabWidget.setCurrentIndex(1)
             self.dlg.setCursor(Qt.ArrowCursor)
     
+    def rechargerDossiers(self):
+        """Recharge la totalité des dossiers"""
+        try:
+            self.PointLayerDossier
+        except AttributeError:
+            pass
+        else:
+            QgsMapLayerRegistry.instance().removeMapLayer(self.PointLayerDossier.id())
+        
+        try:
+            self.PolygonLayerDossier
+        except AttributeError:
+            pass
+        else:
+            QgsMapLayerRegistry.instance().removeMapLayer(self.PolygonLayerDossier.id())
+        self.canvas.refresh()
+        
+        Dossier.truncateDossier()
+        
+        while self.dlg.ui.tableWidget_dossiers.rowCount() > 0:
+            self.dlg.ui.tableWidget_dossiers.removeRow(0)
+            
+        while self.dlg.ui.tableWidget_dossiers.columnCount() > 0:
+            self.dlg.ui.tableWidget_dossiers.removeColumn(0)
+        
+        self.dlg.ui.tabWidget.setTabEnabled(2, False);
+        self.listerDossiers()
+        
     def getArchive(self,row):
         """Recupere le numero de la ligne et telecharge le fichier ZIP du dossier"""
         result = self.dlg.ui.tableWidget_dossiers.findItems(str(row), Qt.MatchExactly)

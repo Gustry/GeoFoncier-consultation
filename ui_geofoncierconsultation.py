@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Sat Jan 25 14:29:24 2014
+# Created: Sat Jan 25 14:34:04 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -126,6 +126,12 @@ class Ui_GeoFoncierConsultation(object):
         self.horizontalLayout_2.addWidget(self.label_listeDossiers)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
+        self.pushButton_rechargerDossiers = QtGui.QPushButton(self.tab)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/reload")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_rechargerDossiers.setIcon(icon)
+        self.pushButton_rechargerDossiers.setObjectName(_fromUtf8("pushButton_rechargerDossiers"))
+        self.horizontalLayout_2.addWidget(self.pushButton_rechargerDossiers)
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
         self.pushButton_enregistrer_dossiers = QtGui.QPushButton(self.tab)
@@ -166,27 +172,25 @@ class Ui_GeoFoncierConsultation(object):
         self.verticalLayout_2.setMargin(0)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.pushButton_couche_osm = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        self.pushButton_couche_osm.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.pushButton_couche_osm.setIcon(icon1)
         self.pushButton_couche_osm.setObjectName(_fromUtf8("pushButton_couche_osm"))
         self.verticalLayout_2.addWidget(self.pushButton_couche_osm)
         self.pushButton_couche_gsat = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_couche_gsat.setIcon(icon1)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_couche_gsat.setIcon(icon2)
         self.pushButton_couche_gsat.setObjectName(_fromUtf8("pushButton_couche_gsat"))
         self.verticalLayout_2.addWidget(self.pushButton_couche_gsat)
         self.pushButton_ZIP = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/zip")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_ZIP.setIcon(icon2)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/zip")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_ZIP.setIcon(icon3)
         self.pushButton_ZIP.setObjectName(_fromUtf8("pushButton_ZIP"))
         self.verticalLayout_2.addWidget(self.pushButton_ZIP)
         self.pushButton_rechargerDossier = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/reload")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_rechargerDossier.setIcon(icon3)
+        self.pushButton_rechargerDossier.setIcon(icon)
         self.pushButton_rechargerDossier.setObjectName(_fromUtf8("pushButton_rechargerDossier"))
         self.verticalLayout_2.addWidget(self.pushButton_rechargerDossier)
         self.formLayoutWidget_2 = QtGui.QWidget(self.tab_2)
@@ -241,7 +245,7 @@ class Ui_GeoFoncierConsultation(object):
         GeoFoncierConsultation.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -255,6 +259,7 @@ class Ui_GeoFoncierConsultation(object):
         self.pushButton_help.setText(_translate("GeoFoncierConsultation", "Aide", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("GeoFoncierConsultation", "Connexion", None))
         self.label_listeDossiers.setText(_translate("GeoFoncierConsultation", "Dossiers", None))
+        self.pushButton_rechargerDossiers.setText(_translate("GeoFoncierConsultation", "Recharger", None))
         self.pushButton_enregistrer_dossiers.setText(_translate("GeoFoncierConsultation", "Enregistrer les dossiers en", None))
         self.comboBox_format.setItemText(0, _translate("GeoFoncierConsultation", "kml", None))
         self.tableWidget_dossiers.setSortingEnabled(True)

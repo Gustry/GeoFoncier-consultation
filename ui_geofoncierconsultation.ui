@@ -36,7 +36,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -235,6 +235,17 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_rechargerDossiers">
+            <property name="text">
+             <string>Recharger</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources_rc.qrc">
+              <normaloff>:/resources/reload</normaloff>:/resources/reload</iconset>
+            </property>
+           </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_2">
