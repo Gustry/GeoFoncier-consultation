@@ -24,6 +24,7 @@
 from PyQt4.QtCore import SIGNAL, Qt, QSettings, QTranslator, qVersion, QCoreApplication, QObject, QVariant, QFileInfo, QUrl
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QDesktopServices, QApplication, QProgressDialog, QPushButton, QTableWidgetItem, QButtonGroup, QListWidgetItem
 from qgis.core import QgsGeometry, QgsMapLayerRegistry, QgsRectangle, QgsFeature, QGis, QgsVectorLayer, QgsRasterLayer, QgsField, QgsCoordinateReferenceSystem
+from qgis.gui import QgsMessageBar
 
 # Import the code for the dialog
 from geofoncierconsultationdialog import GeoFoncierConsultationDialog
@@ -47,6 +48,9 @@ class GeoFoncierConsultationDetails:
         # initialize locale
         locale = QSettings().value("locale/userLocale")[0:2]
         localePath = os.path.join(self.plugin_dir, 'i18n', 'geofoncierconsultation_{}.qm'.format(locale))
+        
+        #Duration QgsMessageDialog
+        self.duration = 5
 
         if os.path.exists(localePath):
             self.translator = QTranslator()
@@ -152,16 +156,6 @@ class GeoFoncierConsultationDetails:
         msg = self.dlg.tr(u"Plugin QGIS pour la consultation des dossiers GéoFoncier<br /><br />Mail: <a href=\"mailto:admin@geofoncier.fr\">admin@geofoncier.fr</a><br />Auteur: Etienne Trimaille\n<br /><strong>Ce plugin est expérimental !</strong><br /><br />Source cartographique : les contributeurs d'<a href='http://www.openstreetmap.org'>OpenStreetMap</a><br/>Fonctionne avec l'API GéoFoncier version 1.2c<br />Licence : <a href='http://www.gnu.org/licenses/quick-guide-gplv3.fr.html'>GNU GPL v3</a>")
         infoString = QCoreApplication.translate('GéoFoncier', msg)
         QMessageBox.information(self.dlg,u"GéoFoncier", infoString)
-        
-    """ Fenêtre d'erreur """
-    def errorWindow(self,message):
-        QMessageBox.critical(self.dlg, u"GéoFoncier", message)
-        
-    """ Fenêtre d'information """
-    def informationWindow(self,message):
-        QMessageBox.information(self.dlg, u"GéoFoncier", message)
-
-
 
  
     """ ONGLET CONNEXION """
@@ -224,15 +218,15 @@ class GeoFoncierConsultationDetails:
         try:
             listeDossierCSV = self.connexionAPI.getListeDossiers()
         except LoginException:
-            self.errorWindow(self.dlg.tr(u"Mauvais nom d'utilisateur ou mot de passe"))
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Mauvais nom d'utilisateur ou mot de passe"), level=QgsMessageBar.CRITICAL, duration=self.duration)
             del self.connexionAPI
             self.run()
         except NoResultException:
-            self.errorWindow(self.dlg.tr(u"Aucun dossier pour ce territoire"))
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Aucun dossier pour ce territoire"), level=QgsMessageBar.CRITICAL, duration=self.duration)
             del self.connexionAPI
             self.run()
         except IOError:
-            self.errorWindow(self.dlg.tr(u"Erreur de connexion réseau à GéoFoncier"))
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Erreur de connexion réseau à GéoFoncier"), level=QgsMessageBar.CRITICAL, duration=self.duration)
             del self.connexionAPI
             self.run()
         else:
@@ -492,7 +486,7 @@ class GeoFoncierConsultationDetails:
         try:
             self.informationFenetreOrdreCoucheDejaVu
         except AttributeError:
-            self.informationWindow(self.dlg.tr(u"Vous pouvez modifier l'ordre des couches en effectuant un glisser/déposer des couches OpenStreetMap et Google en les déplacant vers le bas dans la fenêtre de gauche."))
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Vous pouvez modifier l'ordre des couches en effectuant un glisser/déposer des couches OpenStreetMap et Google en les déplacant vers le bas dans la fenêtre de gauche."), level=QgsMessageBar.INFO , duration=self.duration)
             self.informationFenetreOrdreCoucheDejaVu = True
             
     def ajouterCoucheOSM(self):
@@ -503,7 +497,7 @@ class GeoFoncierConsultationDetails:
         self.osmLayer = QgsRasterLayer(fileInfo.filePath(), "OpenStreetMap")
         
         if not self.osmLayer.isValid():
-            self.errorWindow("Erreur d'ajout de la couche OpenStreetMap")
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Erreur d'ajout de la couche OpenStreetMap"), level=QgsMessageBar.CRITICAL, duration=self.duration)
         
         self.osmLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
         QgsMapLayerRegistry.instance().addMapLayer(self.osmLayer)
@@ -519,7 +513,7 @@ class GeoFoncierConsultationDetails:
         self.googleLayer = QgsRasterLayer(fileInfo.filePath(), u"Photo aérienne Google")
         
         if not self.googleLayer.isValid():
-            self.errorWindow("Erreur d'ajout de la couche OpenStreetMap")
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Erreur d'ajout de la couche Google"), level=QgsMessageBar.CRITICAL, duration=self.duration)
             
         self.googleLayer.setCrs(QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId))
         QgsMapLayerRegistry.instance().addMapLayer(self.googleLayer)

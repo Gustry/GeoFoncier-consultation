@@ -11,8 +11,8 @@
 [general]
 name=Mes dossiers GéoFoncier
 qgisMinimumVersion=2.0
-description=Plugin  de diffusion des dossiers aux clients GéoFoncier
-version=0.4
+description=This plugin helps French users to get informations about works made by french licensed surveyors : boundaries for ownership, locations ...
+version=0.5
 author=Etienne Trimaille
 email=etienne@trimaille.eu
 
@@ -26,7 +26,7 @@ email=etienne@trimaille.eu
 # tags are comma separated with spaces allowed
 tags=géofoncier,géomètre-expert,oge,géomètre,cadastre,bornage
 
-homepage=
+homepage=https://github.com/Gustry/GeoFoncier-consultation
 tracker=https://github.com/Gustry/GeoFoncier-consultation/issues
 repository=https://github.com/Gustry/GeoFoncier-consultation
 icon=resources/icon.png
