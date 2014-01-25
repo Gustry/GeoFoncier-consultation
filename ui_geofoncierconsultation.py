@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Sat Jan 25 14:34:04 2014
+# Created: Sat Jan 25 15:01:21 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -93,7 +93,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_memoriser.setObjectName(_fromUtf8("label_memoriser"))
         self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_memoriser)
         self.verticalLayoutWidget_2 = QtGui.QWidget(self.tab_3)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 20, 191, 82))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(250, 20, 191, 83))
         self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_3.setMargin(0)
@@ -135,6 +135,9 @@ class Ui_GeoFoncierConsultation(object):
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
         self.pushButton_enregistrer_dossiers = QtGui.QPushButton(self.tab)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/save")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_enregistrer_dossiers.setIcon(icon1)
         self.pushButton_enregistrer_dossiers.setObjectName(_fromUtf8("pushButton_enregistrer_dossiers"))
         self.horizontalLayout_2.addWidget(self.pushButton_enregistrer_dossiers)
         self.comboBox_format = QtGui.QComboBox(self.tab)
@@ -172,21 +175,21 @@ class Ui_GeoFoncierConsultation(object):
         self.verticalLayout_2.setMargin(0)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.pushButton_couche_osm = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        self.pushButton_couche_osm.setIcon(icon1)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.pushButton_couche_osm.setIcon(icon2)
         self.pushButton_couche_osm.setObjectName(_fromUtf8("pushButton_couche_osm"))
         self.verticalLayout_2.addWidget(self.pushButton_couche_osm)
         self.pushButton_couche_gsat = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_couche_gsat.setIcon(icon2)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/map")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_couche_gsat.setIcon(icon3)
         self.pushButton_couche_gsat.setObjectName(_fromUtf8("pushButton_couche_gsat"))
         self.verticalLayout_2.addWidget(self.pushButton_couche_gsat)
         self.pushButton_ZIP = QtGui.QPushButton(self.verticalLayoutWidget)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/zip")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_ZIP.setIcon(icon3)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/zip")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_ZIP.setIcon(icon4)
         self.pushButton_ZIP.setObjectName(_fromUtf8("pushButton_ZIP"))
         self.verticalLayout_2.addWidget(self.pushButton_ZIP)
         self.pushButton_rechargerDossier = QtGui.QPushButton(self.verticalLayoutWidget)
