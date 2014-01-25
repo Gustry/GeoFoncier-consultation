@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_geofoncierconsultation.ui'
 #
-# Created: Mon Dec 16 18:45:51 2013
+# Created: Sat Jan 25 12:24:24 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -235,7 +235,7 @@ class Ui_GeoFoncierConsultation(object):
         GeoFoncierConsultation.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(GeoFoncierConsultation)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(GeoFoncierConsultation)
 
     def retranslateUi(self, GeoFoncierConsultation):
@@ -251,7 +251,7 @@ class Ui_GeoFoncierConsultation(object):
         self.label_listeDossiers.setText(_translate("GeoFoncierConsultation", "Dossiers", None))
         self.pushButton_enregistrer_dossiers.setText(_translate("GeoFoncierConsultation", "Enregistrer les dossiers en", None))
         self.comboBox_format.setItemText(0, _translate("GeoFoncierConsultation", "kml", None))
-        self.tableWidget_dossiers.setSortingEnabled(False)
+        self.tableWidget_dossiers.setSortingEnabled(True)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("GeoFoncierConsultation", "Dossiers", None))
         self.label.setText(_translate("GeoFoncierConsultation", "Liste des documents à télécharger :", None))
         self.pushButton_couche_osm.setText(_translate("GeoFoncierConsultation", "Couche cartographique", None))

@@ -253,8 +253,8 @@ class GeoFoncierConsultationDetails:
                 self.dlg.ui.label_listeDossiers.setText(str(Dossier.getNbrDossiers())+ self.dlg.tr(u" dossiers trouvés"))
                 
             #Remplissage de la tableView
-            self.dlg.ui.tableWidget_dossiers.setColumnCount(6)
-            self.dlg.ui.tableWidget_dossiers.setHorizontalHeaderLabels(['Structure', u'Référence', 'Commune', 'Code INSEE', 'Date','Zip'])
+            self.dlg.ui.tableWidget_dossiers.setColumnCount(7)
+            self.dlg.ui.tableWidget_dossiers.setHorizontalHeaderLabels(['ID','Structure', u'Référence', 'Commune', 'Code INSEE', 'Date','Zip'])
             self.dlg.ui.tableWidget_dossiers.setRowCount(nombreDossiers)
             
             self.buttonGroupArchive = QButtonGroup()
@@ -262,18 +262,21 @@ class GeoFoncierConsultationDetails:
             
             for row,dossier in enumerate(Dossier.getListeDossiers()):
                 element = dossier.getInformations()
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 0, QTableWidgetItem(self.dlg.trUtf8(element["structure"])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 1, QTableWidgetItem(self.dlg.trUtf8(element["reference"])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 2, QTableWidgetItem(self.dlg.trUtf8(element["nom_commune"])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 3, QTableWidgetItem(self.dlg.trUtf8(element["insee_commune"])))
-                self.dlg.ui.tableWidget_dossiers.setItem(row, 4, QTableWidgetItem(self.dlg.trUtf8(element["date"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 0, QTableWidgetItem(str(row)))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 1, QTableWidgetItem(self.dlg.trUtf8(element["structure"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 2, QTableWidgetItem(self.dlg.trUtf8(element["reference"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 3, QTableWidgetItem(self.dlg.trUtf8(element["nom_commune"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 4, QTableWidgetItem(self.dlg.trUtf8(element["insee_commune"])))
+                self.dlg.ui.tableWidget_dossiers.setItem(row, 5, QTableWidgetItem(self.dlg.trUtf8(element["date"])))
                 
                 button = QPushButton("Archive")
                 self.buttonGroupArchive.addButton(button, row)
-                self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 5, button)
+                self.dlg.ui.tableWidget_dossiers.setCellWidget(row, 6, button)
             
             self.dlg.ui.tableWidget_dossiers.cellClicked.connect(self.getDetails)
             self.dlg.ui.tableWidget_dossiers.resizeColumnsToContents();
+            self.dlg.ui.tableWidget_dossiers.setColumnWidth(0, 0);
+            self.dlg.ui.tableWidget_dossiers.sortByColumn(5, Qt.DescendingOrder);
             self.dlg.ui.tableWidget_dossiers.resizeRowsToContents();
             self.dlg.ui.tableWidget_dossiers.show()
             self.dlg.ui.label_listeDossiers.show()
@@ -288,12 +291,16 @@ class GeoFoncierConsultationDetails:
     
     def getArchive(self,row):
         """Recupere le numero de la ligne et telecharge le fichier ZIP du dossier"""
-        self.dossier = Dossier.getDossier(row)
-        fichier = "dossier_"+self.dossier.getReference()+".zip"
-        fichier = fichier.decode('utf-8')
-        fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
-        fichier = "-".join(fichier.split())
-        self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
+        result = self.dlg.ui.tableWidget_dossiers.findItems(str(row), Qt.MatchExactly)
+        if len(result) != 1:
+            self.iface.messageBar().pushMessage(self.dlg.tr(u"Erreur de récupération de l'archive"), level=QgsMessageBar.CRITICAL, duration=self.duration)
+        else:
+            self.dossier = Dossier.getDossier(int(result[0].data(0)))
+            fichier = "dossier_"+self.dossier.getReference()+".zip"
+            fichier = fichier.decode('utf-8')
+            fichier = unicodedata.normalize('NFKD', fichier).encode('ASCII', 'ignore')
+            fichier = "-".join(fichier.split())
+            self.connexionAPI.getAndSaveExternalDocument(self.dlg,self.dossier.getURLArchiveZIP(),fichier)
 
     def enregistrerDossiers(self):
         """Enregistre les dossiers"""
@@ -308,9 +315,13 @@ class GeoFoncierConsultationDetails:
     """ ONGLET DETAILS """    
     def getDetails(self):
         """Gere l'affichage de l'onglet details"""
+        index = self.dlg.ui.tableWidget_dossiers.currentIndex();
+        rownumber = index.row();
+        index = index.sibling(rownumber, 0)
+        idDossier = index.data()
+        
         self.dlg.ui.listWidget_details.clear()
-        row = self.dlg.ui.tableWidget_dossiers.currentItem().row()
-        self.dossier = Dossier.getDossier(row)
+        self.dossier = Dossier.getDossier(int(idDossier))
         
         if self.dossier.getGeometries() == None:
             self.dlg.setCursor(Qt.WaitCursor)

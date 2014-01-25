@@ -36,7 +36,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -295,7 +295,7 @@
            <enum>Qt::DashDotDotLine</enum>
           </property>
           <property name="sortingEnabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
