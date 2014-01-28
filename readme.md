@@ -25,7 +25,7 @@ English version follows.
 
  English short description
 ==========================
-This plugin helps French users to get informations about works made by french licensed surveyors : boundaries for ownership, locations ...
+This plugin helps French users to get informations about works made by french licensed surveyors : boundaries for ownership, locations ... A login/password is required.
 It is only useful in France for people having access to GéoFoncier with a login and password. For testing, we can use the login/password "clientge". The English's translation is partial because only French people will use this plugin.
 
 This plugins has 3 steps :
